@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LearnFlow Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% if notifications %}
+<div style="position:fixed; top:20px; right:20px; z-index:9999;">
+    {% for note in notifications %}
+    <div style="
+        background:#0d6efd;
+        color:white;
+        padding:15px 25px;
+        border-radius:8px;
+        margin-bottom:10px;
+        box-shadow:0 8px 20px rgba(0,0,0,0.2);
+        animation: slideFade 6s ease forwards;
+    ">
+        🔔 {{ note.message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<style>
+@keyframes slideFade {
+    0% { transform: translateX(100%); opacity: 0; }
+    10% { transform: translateX(0); opacity: 1; }
+    85% { transform: translateX(0); opacity: 1; }
+    100% { transform: translateX(100%); opacity: 0; }
+}
+</style>
+
+</head>
+<script>
+
+// Load saved mode
+if(localStorage.getItem("darkMode") === "enabled"){
+    document.body.classList.add("dark-mode");
+}
+
+// Toggle Dark Mode
+document.getElementById("darkToggle").onclick = function(){
+
+    document.body.classList.toggle("dark-mode");
+
+    if(document.body.classList.contains("dark-mode")){
+        localStorage.setItem("darkMode","enabled");
+    }else{
+        localStorage.setItem("darkMode","disabled");
+    }
+
+}
+
+</script>
+
+
+<body>
+
+<div class="container-fluid">
+<div class="row">
+
+<!-- Sidebar -->
+<div class="col-md-2 sidebar">
+    <h4 class="logo">LearnFlow</h4>
+    <a href="/dashboard">Dashboard</a>
+    <a  href="/batches">Batches</a>
+    <a href="{{ url_for('tests') }}">Tests</a>
+     <a href="/logout">Log-Out</a>
+     <div class="form-check form-switch mt-4">
+  <input class="form-check-input" type="checkbox" id="darkToggle">
+  <label class="form-check-label text-muted">Dark Mode</label>
+</div>
+
+     
+</div>
+
+<!-- Main -->
+<div class="col-md-10 main p-4">
+
+ <h2>Welcome back, {{name}} 👋</h2>
+        <p>Track your progress, attempt tests, and level up your learning.</p>
+<!-- TOP METRICS -->
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="card p-3 shadow-sm">
+            <h6>Total Tests</h6>
+            <h2>{{ total_tests }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 shadow-sm">
+            <h6>Average Score</h6>
+            <h2>{{ avg_score }}%</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 shadow-sm">
+            <h6>Status</h6>
+            <h5>{{ status }}</h5>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 shadow-sm">
+            <h6>Consistency</h6>
+
+            {% if avg_score >= 75 %}
+                <h5 class="text-success">High 🔥</h5>
+            {% elif avg_score > 0 %}
+                <h5 class="text-warning">Improving ⏳</h5>
+            {% else %}
+                <h5 class="text-secondary">No Data</h5>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+<!-- RECOMMENDATION -->
+<div class="card mt-4 p-3 shadow-sm">
+    <h5>🎯 Personalized Recommendation</h5>
+    <p>{{ recommendation }}</p>
+    <a href="/batches" class="btn btn-primary btn-sm">Explore Batches</a>
+</div>
+
+<!-- PERFORMANCE CHART -->
+<div class="card mt-4 p-3 shadow-sm">
+    <h5>📈 Performance Trend</h5>
+
+    {% if subjects %}
+        <canvas id="scoreChart"></canvas>
+    {% else %}
+        <p class="text-muted">No performance data available yet.</p>
+    {% endif %}
+
+</div>
+
+<!-- SUBJECT PROGRESS -->
+<div class="card mt-4 p-3 shadow-sm">
+    <h5>📚 Subject-wise Progress</h5>
+
+    {% if subjects %}
+        {% for i in range(subjects|length) %}
+        <div class="mb-3">
+            <strong>{{ subjects[i] }}</strong>
+            <div class="progress">
+                <div class="progress-bar bg-success"
+                     style="width: {{ scores[i] }}%">
+                     {{ scores[i] }}%
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">Attempt tests to see subject progress.</p>
+    {% endif %}
+
+</div>
+
+<!-- INSIGHTS -->
+<div class="row mt-4">
+
+    <div class="col-md-6">
+        <div class="card p-3 shadow-sm">
+            <h5>💪 Strong Area</h5>
+
+            {% if subjects %}
+                <p>{{ subjects[scores.index(scores|max)] }}</p>
+            {% else %}
+                <p>No Data</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card p-3 shadow-sm">
+            <h5>⚠️ Needs Improvement</h5>
+
+            {% if subjects %}
+                <p>{{ subjects[scores.index(scores|min)] }}</p>
+            {% else %}
+                <p>No Data</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+<!-- ACHIEVEMENTS -->
+<div class="card mt-4 p-3 shadow-sm">
+    <h5>🏆 Achievements</h5>
+
+    {% if total_tests >= 5 %}
+        <span class="badge bg-success">5+ Tests Completed</span>
+    {% endif %}
+
+    {% if avg_score >= 80 %}
+        <span class="badge bg-warning text-dark">Top Performer</span>
+    {% endif %}
+
+    {% if avg_score >= 60 %}
+        <span class="badge bg-info">Consistent Learner</span>
+    {% endif %}
+
+    {% if total_tests == 0 %}
+        <p class="text-muted mt-2">Start attempting tests to unlock achievements.</p>
+    {% endif %}
+
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- CHART SCRIPT -->
+<script>
+const subjects = {{ subjects | tojson }};
+const scores = {{ scores | tojson }};
+
+if (subjects.length > 0) {
+    new Chart(document.getElementById("scoreChart"), {
+        type: "line",
+        data: {
+            labels: subjects,
+            datasets: [{
+                label: "Score (%)",
+                data: scores,
+                borderWidth: 3,
+                fill: false,
+                tension: 0.3
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: true }
+            }
+        }
+    });
+}
+</script>
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const toggle = document.getElementById("darkToggle");
+
+    // Load saved mode
+    if(localStorage.getItem("darkMode") === "enabled"){
+        document.body.classList.add("dark-mode");
+        toggle.checked = true; // keeps switch ON
+    }
+
+    toggle.addEventListener("change", function(){
+
+        document.body.classList.toggle("dark-mode");
+
+        if(document.body.classList.contains("dark-mode")){
+            localStorage.setItem("darkMode","enabled");
+        }else{
+            localStorage.setItem("darkMode","disabled");
+        }
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>

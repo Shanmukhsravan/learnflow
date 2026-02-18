@@ -1,0 +1,15 @@
+<form method="POST" action="/submit-quiz/{{ quiz_id }}">
+
+{% for q in questions %}
+<div>
+    <strong>{{ q.question }}</strong><br>
+
+    <input type="checkbox" name="q{{ q.id }}" value="A"> {{ q.option_a }}<br>
+    <input type="checkbox" name="q{{ q.id }}" value="B"> {{ q.option_b }}<br>
+    <input type="checkbox" name="q{{ q.id }}" value="C"> {{ q.option_c }}<br>
+    <input type="checkbox" name="q{{ q.id }}" value="D"> {{ q.option_d }}<br>
+</div>
+{% endfor %}
+
+<button type="submit">Submit</button>
+</form>
