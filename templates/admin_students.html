@@ -1,0 +1,24 @@
+<h2>All Students</h2>
+
+<a href="/admin">⬅ Back</a>
+
+<table border="1" cellpadding="10">
+<tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Level</th>
+    <th>Profile</th>
+</tr>
+
+{% for s in students %}
+<tr>
+    <td>{{ s.full_name }}</td>
+    <td>{{ s.email }}</td>
+    <td>{{ s.level }}</td>
+    <td>
+        <a href="/admin/student/{{ s.id }}">View Analytics</a>
+    </td>
+</tr>
+{% endfor %}
+</table>
+<a href="admin_dashboard.html">⬅ Dashboard</a>

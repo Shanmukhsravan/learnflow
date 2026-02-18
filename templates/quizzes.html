@@ -1,0 +1,8 @@
+<h3>Available Quizzes</h3>
+
+{% for quiz in quizzes %}
+    <div>
+        <h4>{{ quiz.title }}</h4>
+        <a href="/attempt/{{ quiz.id }}">Start Quiz</a>
+    </div>
+{% endfor %}

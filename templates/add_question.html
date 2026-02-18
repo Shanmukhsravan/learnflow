@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LearnFlow Batches</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    </head>
+    <body class="container mt-5 text-center">
+      <div class="col-md-15"><h3>Add Question</h3>
+
+<form method="POST">
+    <textarea name="question" required></textarea><br>
+
+    A: <input name="option_a"><br>
+    B: <input name="option_b"><br>
+    C: <input name="option_c"><br>
+    D: <input name="option_d"><br><br>
+
+    Difficulty:
+    <select name="difficulty">
+        <option>Easy</option>
+        <option>Medium</option>
+        <option>Hard</option>
+    </select><br><br>
+
+    Correct:
+    <input type="checkbox" name="correct" value="A">A
+    <input type="checkbox" name="correct" value="B">B
+    <input type="checkbox" name="correct" value="C">C
+    <input type="checkbox" name="correct" value="D">D
+
+    <br><br>
+    <button name="add_question">Add Question</button>
+
+</form>
+
+<hr>
+
+<h4>Questions Added</h4>
+<form method="POST">
+    <button name="publish_quiz" class="btn btn-success">
+        ✅ Finish & Publish Quiz
+    </button>
+</form>
+
+<button onclick="history.back()" class="back-btn">
+    ⬅ Back
+</button>
+</div>
+</body>
+</html>
+

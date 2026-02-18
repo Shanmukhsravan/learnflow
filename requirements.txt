@@ -1,0 +1,5 @@
+ INSERT INTO performance (user_id, subject, score, date_taken)
+    -> VALUES
+    -> (3, 'DBMS', 85, CURDATE()),
+    -> (3, 'OS', 72, CURDATE()),
+    -> (3, 'Algorithms', 90, CURDATE());

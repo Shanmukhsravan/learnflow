@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LearnFlow Batches</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script>
+
+// Load saved mode
+if(localStorage.getItem("darkMode") === "enabled"){
+    document.body.classList.add("dark-mode");
+}
+
+// Toggle Dark Mode
+document.getElementById("darkToggle").onclick = function(){
+
+    document.body.classList.toggle("dark-mode");
+
+    if(document.body.classList.contains("dark-mode")){
+        localStorage.setItem("darkMode","enabled");
+    }else{
+        localStorage.setItem("darkMode","disabled");
+    }
+
+}
+
+</script>
+</head>
+
+<body>
+<div class="container-fluid">
+<div class="row">
+
+<!-- Sidebar -->
+<div class="col-md-2 sidebar">
+    <h4 class="logo">LearnFlow</h4>
+    <a href="/dashboard">Dashboard</a>
+    <a class="active" href="/batches">Batches</a>
+    <a href="{{ url_for('tests') }}">Tests</a>
+    <a href="/logout">Log-Out</a>
+     <div class="form-check form-switch mt-4">
+  <input class="form-check-input" type="checkbox" id="darkToggle">
+  <label class="form-check-label text-muted">Dark Mode</label>
+</div>
+</div>
+
+<!-- Main -->
+<div class="col-md-10 main">
+<h3>Available Batches</h3>
+
+<div class="row mt-4">
+
+{% for batch in batches %}
+<div class="col-md-4">
+    <div class="batch-card">
+
+        <!-- COURSE IMAGE -->
+        <img src="{{ batch.image_url }}"
+             alt="{{ batch.subject }}"
+             class="course-img">
+
+        <h5 class="mt-3">{{ batch.title }}</h5>
+        <p>Subject: {{ batch.subject }}</p>
+        <p>Level: {{ batch.level }}</p>
+
+        <a href="{{ batch.youtube_link }}"
+           target="_blank"
+           class="btn btn-outline-primary btn-sm">
+            ▶ Watch Course
+        </a>
+
+    </div>
+</div>
+{% endfor %}
+
+</div>
+</div>
+</div>
+</div>
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const toggle = document.getElementById("darkToggle");
+
+    // Load saved mode
+    if(localStorage.getItem("darkMode") === "enabled"){
+        document.body.classList.add("dark-mode");
+        toggle.checked = true; // keeps switch ON
+    }
+
+    toggle.addEventListener("change", function(){
+
+        document.body.classList.toggle("dark-mode");
+
+        if(document.body.classList.contains("dark-mode")){
+            localStorage.setItem("darkMode","enabled");
+        }else{
+            localStorage.setItem("darkMode","disabled");
+        }
+
+    });
+
+});
+
+</script>
+</body>
+</html>

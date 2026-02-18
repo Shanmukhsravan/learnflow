@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Available Tests</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script>
+
+// Load saved mode
+if(localStorage.getItem("darkMode") === "enabled"){
+    document.body.classList.add("dark-mode");
+}
+
+// Toggle Dark Mode
+document.getElementById("darkToggle").onclick = function(){
+
+    document.body.classList.toggle("dark-mode");
+
+    if(document.body.classList.contains("dark-mode")){
+        localStorage.setItem("darkMode","enabled");
+    }else{
+        localStorage.setItem("darkMode","disabled");
+    }
+
+}
+
+</script>
+
+<style>
+
+body{
+    background: linear-gradient(135deg,#eef2ff,#f8fbff);
+    font-family: 'Segoe UI', sans-serif;
+    min-height:100vh;
+}
+
+/* Sidebar */
+.sidebar{
+    position: fixed;
+    width:240px;
+    height:100vh;
+    background: white;
+    box-shadow:0 0 20px rgba(0,0,0,0.05);
+    padding:25px;
+}
+
+.logo{
+    font-weight:700;
+    color:#4f46e5;
+    margin-bottom:40px;
+}
+
+.sidebar a{
+    display:block;
+    padding:12px;
+    margin-bottom:10px;
+    text-decoration:none;
+    color:#444;
+    border-radius:10px;
+    transition:0.3s;
+}
+
+.sidebar a:hover{
+    background:#eef2ff;
+    color:#4f46e5;
+    transform:translateX(5px);
+}
+
+/* Main Content */
+.main{
+    margin-left:260px;
+    padding:40px;
+}
+
+/* Header */
+.page-title{
+    font-weight:700;
+    color:#333;
+}
+
+/* Quiz Cards */
+.quiz-card{
+    background:white;
+    padding:18px;
+    border-radius:14px;
+    margin-bottom:15px;
+    text-decoration:none;
+    color:#333;
+    display:block;
+    transition:0.3s;
+    box-shadow:0 5px 15px rgba(0,0,0,0.04);
+}
+
+.quiz-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 15px 30px rgba(79,70,229,0.15);
+    color:#4f46e5;
+}
+
+/* Back Button */
+.back-btn{
+    border-radius:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h4 class="logo">LearnFlow</h4>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/batches">Batches</a>
+    <a href="{{ url_for('tests') }}">Tests</a>
+    <a href="/logout">Log-Out</a>
+      <div class="form-check form-switch mt-4">
+  <input class="form-check-input" type="checkbox" id="darkToggle">
+  <label class="form-check-label text-muted">Dark Mode</label>
+</div>
+</div>
+
+
+<!-- Main Content -->
+<div class="main">
+
+    <a href="/dashboard" class="btn btn-secondary back-btn mb-4">⬅ Back</a>
+
+    <h2 class="page-title mb-4">📘 Available Tests</h2>
+
+    {% if all_quizzes %}
+        
+        {% for quiz in all_quizzes %}
+            <a href="{{ url_for('attempt_quiz', quiz_id=quiz.id) }}"
+               class="quiz-card">
+                🚀 {{ quiz.title }}
+            </a>
+        {% endfor %}
+
+    {% else %}
+        <p class="text-muted">No tests available</p>
+    {% endif %}
+
+</div>
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const toggle = document.getElementById("darkToggle");
+
+    // Load saved mode
+    if(localStorage.getItem("darkMode") === "enabled"){
+        document.body.classList.add("dark-mode");
+        toggle.checked = true; // keeps switch ON
+    }
+
+    toggle.addEventListener("change", function(){
+
+        document.body.classList.toggle("dark-mode");
+
+        if(document.body.classList.contains("dark-mode")){
+            localStorage.setItem("darkMode","enabled");
+        }else{
+            localStorage.setItem("darkMode","disabled");
+        }
+
+    });
+
+});
+
+</script>
+</body>
+</html>
