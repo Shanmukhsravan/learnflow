@@ -6,18 +6,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
 {% if notifications %}
 <div style="position:fixed; top:20px; right:20px; z-index:9999;">
     {% for note in notifications %}
-    <div style="
-        background:#0d6efd;
-        color:white;
-        padding:15px 25px;
-        border-radius:8px;
-        margin-bottom:10px;
-        box-shadow:0 8px 20px rgba(0,0,0,0.2);
-        animation: slideFade 6s ease forwards;
-    ">
+    <div class="notification-toast">
         🔔 {{ note.message }}
     </div>
     {% endfor %}
@@ -25,6 +18,27 @@
 {% endif %}
 
 <style>
+    /* Top Navbar Profile */
+.dropdown-toggle {
+    border-radius: 30px;
+    padding: 8px 18px;
+}
+
+.dropdown-menu {
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.notification-toast{
+    background:#4f46e5;
+    color:white;
+    padding:15px 25px;
+    border-radius:12px;
+    margin-bottom:10px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.25);
+    animation: slideFade 6s ease forwards;
+}
+
 @keyframes slideFade {
     0% { transform: translateX(100%); opacity: 0; }
     10% { transform: translateX(0); opacity: 1; }
@@ -34,80 +48,93 @@
 </style>
 
 </head>
-<script>
-
-// Load saved mode
-if(localStorage.getItem("darkMode") === "enabled"){
-    document.body.classList.add("dark-mode");
-}
-
-// Toggle Dark Mode
-document.getElementById("darkToggle").onclick = function(){
-
-    document.body.classList.toggle("dark-mode");
-
-    if(document.body.classList.contains("dark-mode")){
-        localStorage.setItem("darkMode","enabled");
-    }else{
-        localStorage.setItem("darkMode","disabled");
-    }
-
-}
-
-</script>
-
 
 <body>
+
+<!-- PAGE LOADER -->
+<div id="pageLoader" class="page-loader">
+    <div class="spinner-border text-primary"></div>
+</div>
 
 <div class="container-fluid">
 <div class="row">
 
-<!-- Sidebar -->
+<!-- SIDEBAR -->
 <div class="col-md-2 sidebar">
-    <h4 class="logo">LearnFlow</h4>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h4 class="logo">LearnFlow</h4>
+        <button class="btn btn-sm btn-light d-md-none" onclick="toggleSidebar()">☰</button>
+    </div>
+
     <a href="/dashboard">Dashboard</a>
-    <a  href="/batches">Batches</a>
+    <a href="/batches">Batches</a>
     <a href="{{ url_for('tests') }}">Tests</a>
-     <a href="/logout">Log-Out</a>
-     <div class="form-check form-switch mt-4">
-  <input class="form-check-input" type="checkbox" id="darkToggle">
-  <label class="form-check-label text-muted">Dark Mode</label>
+    
+
+    <!-- DARK MODE -->
+    <div class="form-check form-switch mt-4">
+        <input class="form-check-input" type="checkbox" id="darkToggle">
+        <label class="form-check-label text-muted">Dark Mode</label>
+    </div>
+
+
+</div>
+<!-- HERO SECTION -->
+ <div class="col-md-10 main p-4">
+<div class="hero d-flex justify-content-between align-items-start">
+
+    <!-- LEFT SIDE -->
+    <div>
+        <h2>AI Learning Insights</h2>
+        <p>Your personalized learning performance overview</p>
+    </div>
+
+    <!-- RIGHT SIDE (Profile Dropdown) -->
+    <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle shadow-sm"
+                data-bs-toggle="dropdown">
+            👤 {{ name }}
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="/logout">Logout ⏻</a></li>
+        </ul>
+    </div>
+
 </div>
 
-     
-</div>
+<h2>Welcome back, {{name}} 👋</h2>
+<p>Track your progress, attempt tests, and level up your learning.</p>
 
-<!-- Main -->
-<div class="col-md-10 main p-4">
 
- <h2>Welcome back, {{name}} 👋</h2>
-        <p>Track your progress, attempt tests, and level up your learning.</p>
-<!-- TOP METRICS -->
+<!-- METRICS -->
 <div class="row">
 
     <div class="col-md-3">
-        <div class="card p-3 shadow-sm">
+        <div class="metric-card">
             <h6>Total Tests</h6>
-            <h2>{{ total_tests }}</h2>
+            <h2 class="counter" data-target="{{ total_tests }}">{{ total_tests }}</h2>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card p-3 shadow-sm">
+        <div class="metric-card">
             <h6>Average Score</h6>
-            <h2>{{ avg_score }}%</h2>
+            <h2 class="counter" data-target="{{ avg_score }}">{{ avg_score }} </h2> %
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card p-3 shadow-sm">
+        <div class="metric-card">
             <h6>Status</h6>
             <h5>{{ status }}</h5>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card p-3 shadow-sm">
+        <div class="metric-card">
             <h6>Consistency</h6>
 
             {% if avg_score >= 75 %}
@@ -130,7 +157,7 @@ document.getElementById("darkToggle").onclick = function(){
     <a href="/batches" class="btn btn-primary btn-sm">Explore Batches</a>
 </div>
 
-<!-- PERFORMANCE CHART -->
+<!-- CHART -->
 <div class="card mt-4 p-3 shadow-sm">
     <h5>📈 Performance Trend</h5>
 
@@ -139,7 +166,6 @@ document.getElementById("darkToggle").onclick = function(){
     {% else %}
         <p class="text-muted">No performance data available yet.</p>
     {% endif %}
-
 </div>
 
 <!-- SUBJECT PROGRESS -->
@@ -161,7 +187,6 @@ document.getElementById("darkToggle").onclick = function(){
     {% else %}
         <p class="text-muted">Attempt tests to see subject progress.</p>
     {% endif %}
-
 </div>
 
 <!-- INSIGHTS -->
@@ -176,7 +201,6 @@ document.getElementById("darkToggle").onclick = function(){
             {% else %}
                 <p>No Data</p>
             {% endif %}
-
         </div>
     </div>
 
@@ -189,7 +213,6 @@ document.getElementById("darkToggle").onclick = function(){
             {% else %}
                 <p>No Data</p>
             {% endif %}
-
         </div>
     </div>
 
@@ -214,13 +237,12 @@ document.getElementById("darkToggle").onclick = function(){
     {% if total_tests == 0 %}
         <p class="text-muted mt-2">Start attempting tests to unlock achievements.</p>
     {% endif %}
-
 </div>
 
 </div>
 </div>
 </div>
-
+</div>
 <!-- CHART SCRIPT -->
 <script>
 const subjects = {{ subjects | tojson }};
@@ -238,29 +260,41 @@ if (subjects.length > 0) {
                 fill: false,
                 tension: 0.3
             }]
-        },
-        options: {
-            plugins: {
-                legend: { display: true }
-            }
         }
     });
 }
 </script>
-<script>
 
+<!-- COUNTER ANIMATION -->
+<script>
+document.querySelectorAll(".counter").forEach(counter => {
+    const target = +counter.getAttribute("data-target");
+    let count = 0;
+    const update = () => {
+        if(count < target){
+            count += Math.ceil(target / 40);
+            counter.innerText = count;
+            setTimeout(update, 30);
+        } else {
+            counter.innerText = target;
+        }
+    };
+    update();
+});
+</script>
+
+<!-- DARK MODE -->
+<script>
 document.addEventListener("DOMContentLoaded", function(){
 
     const toggle = document.getElementById("darkToggle");
 
-    // Load saved mode
     if(localStorage.getItem("darkMode") === "enabled"){
         document.body.classList.add("dark-mode");
-        toggle.checked = true; // keeps switch ON
+        toggle.checked = true;
     }
 
     toggle.addEventListener("change", function(){
-
         document.body.classList.toggle("dark-mode");
 
         if(document.body.classList.contains("dark-mode")){
@@ -268,12 +302,18 @@ document.addEventListener("DOMContentLoaded", function(){
         }else{
             localStorage.setItem("darkMode","disabled");
         }
-
     });
 
+    // Hide loader
+    document.getElementById("pageLoader").style.display = "none";
 });
 
+function toggleSidebar(){
+    document.querySelector(".sidebar").classList.toggle("collapsed");
+}
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

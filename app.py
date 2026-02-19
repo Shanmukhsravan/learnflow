@@ -151,38 +151,46 @@ def admin_auth():
 # =====================================================
 # SELECT SUBJECT
 # =====================================================
-@app.route("/select-subject", methods=["GET", "POST"])
+@app.route('/select-subject', methods=['GET','POST'])
 def select_subject():
-    if request.method == "POST":
+
+    if request.method == 'POST':
+        subject = request.form['subject']
+
         con = get_connection()
         cur = con.cursor()
-        cur.execute("UPDATE users SET preferred_subject=%s WHERE id=%s",
-                    (request.form["subject"], session["user_id"]))
+
+        cur.execute("""
+            UPDATE users
+            SET preferred_subject=%s
+            WHERE id=%s
+        """, (subject, session["user_id"]))
+
         con.commit()
         con.close()
 
-        return redirect(url_for("start_assessment"))
+        return render_template(
+            "select_subject.html",
+            step=2,
+            subject=subject
+        )
 
-    return render_template("select_subject.html")
+    return render_template("select_subject.html", step=1)
+
+
+
 
 # =====================================================
 # START ASSESSMENT
 # =====================================================
-@app.route("/assessment")
+@app.route("/assessment", methods=["POST"])
 def start_assessment():
+
+    subject = request.form.get("subject")
+    print("Subject from form:", subject)
 
     con = get_connection()
     cur = con.cursor(dictionary=True)
-
-    cur.execute("SELECT preferred_subject FROM users WHERE id=%s",
-                (session["user_id"],))
-    subject_data = cur.fetchone()
-
-    if not subject_data or not subject_data["preferred_subject"]:
-        flash("Please select subject first", "danger")
-        return redirect(url_for("select_subject"))
-
-    subject = subject_data["preferred_subject"]
 
     cur.execute("""
         SELECT id FROM quizzes
@@ -193,6 +201,8 @@ def start_assessment():
     """, (subject,))
 
     quiz = cur.fetchone()
+    print("Quiz fetched:", quiz)
+
     con.close()
 
     if not quiz:
@@ -200,6 +210,8 @@ def start_assessment():
         return redirect(url_for("dashboard"))
 
     return redirect(url_for("attempt_quiz", quiz_id=quiz["id"]))
+
+
 
 # =====================================================
 # ATTEMPT QUIZ
@@ -241,13 +253,11 @@ def submit_quiz(quiz_id):
     total = len(questions)
 
     for q in questions:
+        selected = request.form.getlist(f"q{q['id']}")
+        correct = q["correct_answers"].split(",")
 
-     selected = request.form.getlist(f"q{q['id']}")
-
-     correct = q["correct_answers"].split(",")
-
-     if set(selected) == set(correct):
-        score += 1
+        if set(selected) == set(correct):
+            score += 1
 
     percentage = int((score / total) * 100) if total else 0
 
@@ -260,8 +270,23 @@ def submit_quiz(quiz_id):
     con.commit()
     con.close()
 
-    flash(f"You scored {percentage}%", "success")
-    return redirect(url_for("dashboard"))
+    return redirect(url_for("quiz_result",
+                            percentage=percentage,
+                            score=score,
+                            total=total))
+#-----------Quiz Result -----------------------------------
+@app.route("/quiz-result")
+def quiz_result():
+
+    percentage = request.args.get("percentage")
+    score = request.args.get("score")
+    total = request.args.get("total")
+
+    return render_template("quiz_result.html",
+                           percentage=percentage,
+                           score=score,
+                           total=total)
+
 
 # =====================================================
 # ADMIN DASHBOARD

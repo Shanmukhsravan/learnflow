@@ -8,6 +8,25 @@ body {
     background:#f6f8fb;
     min-height: 100vh;
     overflow-x: hidden;
+    position: relative;
+}
+
+/* Subtle Startup Glow Background */
+body::before {
+    content: "";
+    position: fixed;
+    top: -200px;
+    right: -200px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(79,70,229,0.15), transparent 70%);
+    z-index: -1;
+    animation: floatBlob 8s ease-in-out infinite;
+}
+
+@keyframes floatBlob {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(20px); }
 }
 
 /* ===================================================
@@ -16,28 +35,13 @@ body {
 
 .sidebar {
     position: fixed;
-    width: 240px;
-    height: 100vh;
-    background: #ffffff;
-    padding: 25px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.06);
-}
-
-.logo {
-    font-size: 22px;
-    font-weight: 700;
-    color: #4f46e5;
-    margin-bottom: 40px;
-}
-
-/* Sidebar Links */
-.sidebar{
-    position: fixed;
     width: 250px;
     height: 100vh;
-    background:#ffffff;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
     border-right:1px solid #e5e7eb;
     padding:30px 22px;
+    transition: 0.3s ease;
 }
 
 /* Logo */
@@ -45,6 +49,7 @@ body {
     font-size:24px;
     font-weight:700;
     margin-bottom:50px;
+    color:#4f46e5;
 }
 
 /* Links */
@@ -63,13 +68,13 @@ body {
 
 .sidebar a:hover{
     background:#f1f5f9;
+    transform: translateX(4px);
 }
 
 .sidebar a.active{
     background:#eef2ff;
     color:#4f46e5;
 }
-
 
 /* ===================================================
    MAIN CONTENT
@@ -89,7 +94,7 @@ body {
 }
 
 /* ===================================================
-   CARDS (Dashboard Cards)
+   CARDS
 =================================================== */
 
 .card {
@@ -143,13 +148,31 @@ body {
     padding: 22px;
     border-radius: 18px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.06);
-    transition: 0.35s ease;
+    transition: all 0.35s ease;
     margin-bottom: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.batch-card::after {
+    content: "";
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    background: linear-gradient(135deg, rgba(79,70,229,0.08), transparent);
+    top: -10%;
+    left: -10%;
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.batch-card:hover::after {
+    opacity: 1;
 }
 
 .batch-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(79,70,229,0.18);
+    transform: translateY(-10px);
+    box-shadow: 0 25px 45px rgba(79,70,229,0.18);
 }
 
 .course-img {
@@ -171,15 +194,14 @@ body {
     border-radius: 12px;
     padding: 10px 22px;
     font-weight: 600;
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 25px rgba(79,70,229,0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(79,70,229,0.4);
 }
 
-/* Secondary Button */
 .btn-secondary {
     border-radius: 10px;
 }
@@ -261,6 +283,40 @@ body {
         transform: translateY(0);
     }
 }
+
+/* ===================================================
+   HERO SECTION
+=================================================== */
+
+.hero{
+    background:linear-gradient(135deg,#4f46e5,#6366f1);
+    color:white;
+    padding:28px;
+    border-radius:16px;
+    margin-bottom:28px;
+}
+
+.hero h2{
+    font-weight:600;
+}
+
+.hero p{
+    opacity:0.9;
+}
+
+/* Back Button */
+.back-btn {
+    background: #4f46e5;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.back-btn:hover {
+    background: #3730a3;
+}
+
 /* ===================================================
    DARK MODE
 =================================================== */
@@ -269,9 +325,9 @@ body.dark-mode {
     background: linear-gradient(135deg, #0f172a, #020617);
 }
 
-/* Sidebar Dark */
 body.dark-mode .sidebar {
-    background: #020617;
+    background: rgba(2,6,23,0.85);
+    backdrop-filter: blur(12px);
     box-shadow: none;
 }
 
@@ -279,7 +335,6 @@ body.dark-mode .logo {
     color: #818cf8;
 }
 
-/* Sidebar Links */
 body.dark-mode .sidebar a {
     color: #cbd5e1;
 }
@@ -290,24 +345,22 @@ body.dark-mode .sidebar a.active {
     color: #818cf8;
 }
 
-/* Cards */
 body.dark-mode .card,
 body.dark-mode .batch-card,
 body.dark-mode .table {
-    background: #020617;
+    background: #0f172a;
     color: #e2e8f0;
     box-shadow: 0 10px 30px rgba(0,0,0,0.6);
 }
 
-/* Text Fix */
 body.dark-mode .page-title {
     color: #f1f5f9;
 }
 
-/* Progress */
 body.dark-mode .progress {
     background: #1e293b;
 }
+
 body.dark-mode .text-muted{
     color:#94a3b8 !important;
 }
@@ -327,29 +380,164 @@ body.dark-mode span,
 body.dark-mode strong{
     color:#e2e8f0;
 }
-.hero{
-    background:linear-gradient(135deg,#4f46e5,#6366f1);
-    color:white;
-    padding:28px;
-    border-radius:16px;
-    margin-bottom:28px;
+/* ===================================================
+   LOGIN PAGE
+=================================================== */
+
+.login-body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef2ff, #f8fafc);
 }
 
-.hero h2{
-    font-weight:600;
-}
-
-.hero p{
-    opacity:0.9;
-}
-.back-btn {
-    background: #4f46e5;
-    color: white;
-    padding: 8px 15px;
+/* Glass Card Effect */
+.login-card {
+    border-radius: 20px;
     border: none;
-    border-radius: 6px;
-    cursor: pointer;
+    box-shadow: 0 20px 40px rgba(79,70,229,0.15);
+    transition: 0.3s ease;
 }
-.back-btn:hover {
-    background: #3730a3;
+
+.login-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Modern Input */
+.modern-input {
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    transition: 0.3s ease;
+}
+
+.modern-input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+}
+
+/* Login Button */
+.login-btn {
+    border-radius: 12px;
+    padding: 10px;
+    font-weight: 600;
+}
+
+/* Dark Mode Support */
+body.dark-mode.login-body {
+    background: linear-gradient(135deg, #0f172a, #020617);
+}
+
+body.dark-mode .login-card {
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+body.dark-mode .modern-input {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+}
+/* ===================================================
+   FLASH MESSAGES (SaaS Style)
+=================================================== */
+
+.flash-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: 300px;
+}
+
+.flash-alert {
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    animation: slideIn 0.4s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+/* ===================================================
+   APP LAYOUT
+=================================================== */
+
+.app-layout {
+    display: flex;
+}
+
+.main-content {
+    flex: 1;
+    margin-left: 250px;
+    padding: 40px;
+    transition: 0.3s ease;
+}
+
+/* ===================================================
+   SIDEBAR ANIMATION
+=================================================== */
+
+.sidebar {
+    transition: all 0.3s ease;
+}
+
+.sidebar a:hover {
+    transform: translateX(6px);
+}
+
+/* ===================================================
+   METRIC CARDS (AI STYLE)
+=================================================== */
+
+.metric-card {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    transition: 0.3s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(79,70,229,0.15);
+}
+
+.metric-card h6 {
+    color: #64748b;
+    font-weight: 500;
+}
+
+.metric-card h3 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #4f46e5;
+}
+
+/* ===================================================
+   PAGE LOADER
+=================================================== */
+
+.page-loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Dark Mode Support */
+body.dark-mode .metric-card {
+    background: #0f172a;
+    color: #e2e8f0;
 }
