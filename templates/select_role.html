@@ -1,16 +1,94 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>select role</title>
+    <title>Select Role</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<style>
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(135deg,#eef2ff,#f8fbff);
+    font-family:'Segoe UI', sans-serif;
+}
+
+.role-card{
+    background:white;
+    padding:50px;
+    border-radius:20px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.08);
+    width:100%;
+    max-width:450px;
+    animation: fadeIn 0.5s ease;
+}
+
+.role-card h3{
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.role-card p{
+    color:#6c757d;
+    margin-bottom:30px;
+}
+
+.role-btn{
+    width:100%;
+    padding:15px;
+    border-radius:12px;
+    font-weight:600;
+    font-size:16px;
+    transition:0.3s ease;
+}
+
+.role-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+.student-btn{
+    background:linear-gradient(135deg,#4f46e5,#6366f1);
+    border:none;
+    color:white;
+}
+
+.admin-btn{
+    background:linear-gradient(135deg,#dc3545,#ff6b6b);
+    border:none;
+    color:white;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(15px);}
+    to{opacity:1; transform:translateY(0);}
+}
+</style>
+
 </head>
 
-<body class="container mt-5 text-center">
-<h3>Select Role</h3><hr>
+<body>
 
-<form method="POST">
-    <div><button name="role" value="student" class="btn btn-primary">Student</button>
-    <button name="role" value="admin" class="btn btn-danger">Admin</button></div>
-</form>
+<div class="role-card text-center">
+    <h3>🚀 Select Your Role</h3>
+    <p>Choose how you want to continue in LearnFlow</p>
+    <hr>
+
+    <form method="POST">
+        <div class="d-grid gap-3">
+
+            <button name="role" value="student" class="btn role-btn student-btn">
+                🎓 Continue as Student
+            </button>
+
+            <button name="role" value="admin" class="btn role-btn admin-btn">
+                🛠 Continue as Admin
+            </button>
+
+        </div>
+    </form>
+</div>
+
 </body>
 </html>

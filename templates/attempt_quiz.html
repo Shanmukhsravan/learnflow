@@ -1,15 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assessment</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<style>
+body{
+    background:#f4f6fb;
+    font-family:'Segoe UI',sans-serif;
+}
+
+.exam-container{
+    max-width:1100px;
+    margin:30px auto;
+    display:flex;
+    gap:25px;
+}
+
+/* LEFT QUESTION PANEL */
+.question-panel{
+    flex:3;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* RIGHT PALETTE */
+.palette{
+    flex:1;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.palette-box{
+    width:40px;
+    height:40px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    margin:5px;
+    border:1px solid #ccc;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.palette-box.visited{ background:#ffc107; }
+.palette-box.answered{ background:#28a745; color:white; }
+.palette-box.not-answered{ background:#dc3545; color:white; }
+
+/* Timer */
+.timer{
+    position:absolute;
+    top:20px;
+    right:40px;
+    font-weight:700;
+    font-size:18px;
+    color:#dc3545;
+}
+
+.option-box{
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:10px;
+    background:#f8f9fa;
+    cursor:pointer;
+}
+
+.option-box:hover{
+    background:#e9ecef;
+}
+
+.action-btn{
+    margin-right:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="timer">
+    ⏳ Time Left: <span id="time">30:00</span>
+</div>
+
 <form method="POST" action="/submit-quiz/{{ quiz_id }}">
 
-{% for q in questions %}
-<div>
-    <strong>{{ q.question }}</strong><br>
+<div class="exam-container">
 
-    <input type="checkbox" name="q{{ q.id }}" value="A"> {{ q.option_a }}<br>
-    <input type="checkbox" name="q{{ q.id }}" value="B"> {{ q.option_b }}<br>
-    <input type="checkbox" name="q{{ q.id }}" value="C"> {{ q.option_c }}<br>
-    <input type="checkbox" name="q{{ q.id }}" value="D"> {{ q.option_d }}<br>
+    <!-- QUESTION AREA -->
+    <div class="question-panel">
+
+        {% for q in questions %}
+        <div class="question-block" id="question{{ loop.index0 }}" style="display:none;">
+            
+            <h5>Question {{ loop.index }} of {{ questions|length }}</h5>
+            <hr>
+
+            <p><strong>{{ q.question }}</strong></p>
+
+            <label class="option-box">
+                <input type="checkbox" name="q{{ q.id }}" value="a">
+                {{ q.option_a }}
+            </label>
+
+            <label class="option-box">
+                <input type="checkbox" name="q{{ q.id }}" value="b">
+                {{ q.option_b }}
+            </label>
+
+            <label class="option-box">
+                <input type="checkbox" name="q{{ q.id }}" value="c">
+                {{ q.option_c }}
+            </label>
+
+            <label class="option-box">
+                <input type="checkbox" name="q{{ q.id }}" value="d">
+                {{ q.option_d }}
+            </label>
+
+        </div>
+        {% endfor %}
+
+        <div class="mt-4">
+            <button type="button" class="btn btn-secondary action-btn" onclick="clearResponse()">Clear Response</button>
+            <button type="button" class="btn btn-primary action-btn" onclick="saveNext()">Save & Next</button>
+            <button type="submit" class="btn btn-success">Submit Exam</button>
+        </div>
+
+    </div>
+
+    <!-- QUESTION PALETTE -->
+    <div class="palette">
+        <h6>Question Palette</h6>
+        <hr>
+
+        {% for q in questions %}
+        <div class="palette-box" id="palette{{ loop.index0 }}" onclick="goToQuestion({{ loop.index0 }})">
+            {{ loop.index }}
+        </div>
+        {% endfor %}
+    </div>
+
 </div>
-{% endfor %}
 
-<button type="submit">Submit</button>
 </form>
+
+<script>
+let currentQuestion = 0;
+let totalQuestions = {{ questions|length }};
+
+function showQuestion(index){
+    document.querySelectorAll(".question-block").forEach(q=>q.style.display="none");
+    document.getElementById("question"+index).style.display="block";
+
+    document.querySelectorAll(".palette-box")[index].classList.add("visited");
+}
+
+function saveNext(){
+    markAnswered();
+    if(currentQuestion < totalQuestions-1){
+        currentQuestion++;
+        showQuestion(currentQuestion);
+    }
+}
+
+function goToQuestion(index){
+    currentQuestion = index;
+    showQuestion(index);
+}
+
+function clearResponse(){
+    let checkboxes = document.querySelectorAll("#question"+currentQuestion+" input[type=checkbox]");
+    checkboxes.forEach(cb=>cb.checked=false);
+    document.getElementById("palette"+currentQuestion).classList.remove("answered");
+    document.getElementById("palette"+currentQuestion).classList.add("not-answered");
+}
+
+function markAnswered(){
+    let checkboxes = document.querySelectorAll("#question"+currentQuestion+" input[type=checkbox]");
+    let answered = false;
+    checkboxes.forEach(cb=>{
+        if(cb.checked) answered = true;
+    });
+
+    let palette = document.getElementById("palette"+currentQuestion);
+    palette.classList.remove("not-answered");
+    palette.classList.remove("visited");
+
+    if(answered){
+        palette.classList.add("answered");
+    }else{
+        palette.classList.add("not-answered");
+    }
+}
+
+/* TIMER */
+let timeLeft = 30 * 60; // 30 minutes
+
+let timer = setInterval(function(){
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+
+    document.getElementById("time").innerText =
+        (minutes < 10 ? "0"+minutes : minutes) + ":" +
+        (seconds < 10 ? "0"+seconds : seconds);
+
+    if(timeLeft <= 0){
+        clearInterval(timer);
+        alert("Time's up! Submitting exam.");
+        document.querySelector("form").submit();
+    }
+
+    timeLeft--;
+}, 1000);
+
+showQuestion(0);
+</script>
+
+</body>
+</html>
