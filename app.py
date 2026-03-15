@@ -526,7 +526,7 @@ def add_question(quiz_id):
 
     if request.method == "POST":
 
-        # 🔥 Get multiple correct answers
+        #  Get multiple correct answers
         correct_answers = ",".join(request.form.getlist("correct_answers"))
 
         con = get_connection()

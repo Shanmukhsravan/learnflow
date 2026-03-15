@@ -5,7 +5,7 @@
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
-    background:#f6f8fb;
+    background: #f6f8fb;
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
@@ -19,14 +19,21 @@ body::before {
     right: -200px;
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(79,70,229,0.15), transparent 70%);
+    background: radial-gradient(circle, rgba(79, 70, 229, 0.15), transparent 70%);
     z-index: -1;
     animation: floatBlob 8s ease-in-out infinite;
 }
 
 @keyframes floatBlob {
-    0%,100% { transform: translateY(0px); }
-    50% { transform: translateY(20px); }
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(20px);
+    }
 }
 
 /* ===================================================
@@ -37,43 +44,43 @@ body::before {
     position: fixed;
     width: 250px;
     height: 100vh;
-    background: rgba(255,255,255,0.85);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
-    border-right:1px solid #e5e7eb;
-    padding:30px 22px;
+    border-right: 1px solid #e5e7eb;
+    padding: 30px 22px;
     transition: 0.3s ease;
 }
 
 /* Logo */
-.logo{
-    font-size:24px;
-    font-weight:700;
-    margin-bottom:50px;
-    color:#4f46e5;
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 50px;
+    color: #4f46e5;
 }
 
 /* Links */
-.sidebar a{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:12px;
-    margin-bottom:8px;
-    border-radius:10px;
-    text-decoration:none;
-    color:#475569;
-    font-weight:500;
-    transition:0.25s;
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #475569;
+    font-weight: 500;
+    transition: 0.25s;
 }
 
-.sidebar a:hover{
-    background:#f1f5f9;
+.sidebar a:hover {
+    background: #f1f5f9;
     transform: translateX(4px);
 }
 
-.sidebar a.active{
-    background:#eef2ff;
-    color:#4f46e5;
+.sidebar a.active {
+    background: #eef2ff;
+    color: #4f46e5;
 }
 
 /* ===================================================
@@ -102,13 +109,13 @@ body::before {
     border-radius: 18px;
     padding: 22px;
     border: none;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
     transition: all 0.35s ease;
 }
 
 .card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 18px 35px rgba(79,70,229,0.15);
+    box-shadow: 0 18px 35px rgba(79, 70, 229, 0.15);
 }
 
 /* ===================================================
@@ -147,7 +154,7 @@ body::before {
     background: #ffffff;
     padding: 22px;
     border-radius: 18px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
     transition: all 0.35s ease;
     margin-bottom: 25px;
     position: relative;
@@ -159,7 +166,7 @@ body::before {
     position: absolute;
     width: 120%;
     height: 120%;
-    background: linear-gradient(135deg, rgba(79,70,229,0.08), transparent);
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), transparent);
     top: -10%;
     left: -10%;
     opacity: 0;
@@ -172,7 +179,7 @@ body::before {
 
 .batch-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 25px 45px rgba(79,70,229,0.18);
+    box-shadow: 0 25px 45px rgba(79, 70, 229, 0.18);
 }
 
 .course-img {
@@ -199,7 +206,7 @@ body::before {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(79,70,229,0.4);
+    box-shadow: 0 12px 30px rgba(79, 70, 229, 0.4);
 }
 
 .btn-secondary {
@@ -278,6 +285,7 @@ body::before {
         opacity: 0;
         transform: translateY(8px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -288,20 +296,20 @@ body::before {
    HERO SECTION
 =================================================== */
 
-.hero{
-    background:linear-gradient(135deg,#4f46e5,#6366f1);
-    color:white;
-    padding:28px;
-    border-radius:16px;
-    margin-bottom:28px;
+.hero {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: white;
+    padding: 28px;
+    border-radius: 16px;
+    margin-bottom: 28px;
 }
 
-.hero h2{
-    font-weight:600;
+.hero h2 {
+    font-weight: 600;
 }
 
-.hero p{
-    opacity:0.9;
+.hero p {
+    opacity: 0.9;
 }
 
 /* Back Button */
@@ -313,6 +321,7 @@ body::before {
     border-radius: 6px;
     cursor: pointer;
 }
+
 .back-btn:hover {
     background: #3730a3;
 }
@@ -326,7 +335,7 @@ body.dark-mode {
 }
 
 body.dark-mode .sidebar {
-    background: rgba(2,6,23,0.85);
+    background: rgba(2, 6, 23, 0.85);
     backdrop-filter: blur(12px);
     box-shadow: none;
 }
@@ -350,7 +359,7 @@ body.dark-mode .batch-card,
 body.dark-mode .table {
     background: #0f172a;
     color: #e2e8f0;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 }
 
 body.dark-mode .page-title {
@@ -361,12 +370,12 @@ body.dark-mode .progress {
     background: #1e293b;
 }
 
-body.dark-mode .text-muted{
-    color:#94a3b8 !important;
+body.dark-mode .text-muted {
+    color: #94a3b8 !important;
 }
 
-body.dark-mode .text-dark{
-    color:#f1f5f9 !important;
+body.dark-mode .text-dark {
+    color: #f1f5f9 !important;
 }
 
 body.dark-mode h1,
@@ -377,9 +386,10 @@ body.dark-mode h5,
 body.dark-mode h6,
 body.dark-mode p,
 body.dark-mode span,
-body.dark-mode strong{
-    color:#e2e8f0;
+body.dark-mode strong {
+    color: #e2e8f0;
 }
+
 /* ===================================================
    LOGIN PAGE
 =================================================== */
@@ -393,7 +403,7 @@ body.dark-mode strong{
 .login-card {
     border-radius: 20px;
     border: none;
-    box-shadow: 0 20px 40px rgba(79,70,229,0.15);
+    box-shadow: 0 20px 40px rgba(79, 70, 229, 0.15);
     transition: 0.3s ease;
 }
 
@@ -411,7 +421,7 @@ body.dark-mode strong{
 
 .modern-input:focus {
     border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
 /* Login Button */
@@ -436,6 +446,7 @@ body.dark-mode .modern-input {
     border: 1px solid #334155;
     color: #e2e8f0;
 }
+
 /* ===================================================
    FLASH MESSAGES (SaaS Style)
 =================================================== */
@@ -452,7 +463,7 @@ body.dark-mode .modern-input {
     border-radius: 12px;
     padding: 12px 16px;
     margin-bottom: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     animation: slideIn 0.4s ease;
 }
 
@@ -461,11 +472,13 @@ body.dark-mode .modern-input {
         opacity: 0;
         transform: translateX(20px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
     }
 }
+
 /* ===================================================
    APP LAYOUT
 =================================================== */
@@ -501,13 +514,13 @@ body.dark-mode .modern-input {
     background: white;
     border-radius: 18px;
     padding: 24px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     transition: 0.3s ease;
 }
 
 .metric-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 20px 40px rgba(79,70,229,0.15);
+    box-shadow: 0 20px 40px rgba(79, 70, 229, 0.15);
 }
 
 .metric-card h6 {
