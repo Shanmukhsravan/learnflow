@@ -1,5 +1,10 @@
- INSERT INTO performance (user_id, subject, score, date_taken)
-    -> VALUES
-    -> (3, 'DBMS', 85, CURDATE()),
-    -> (3, 'OS', 72, CURDATE()),
-    -> (3, 'Algorithms', 90, CURDATE());
+Flask>=3.0.0
+Flask-Mail>=0.9.1
+mysql-connector-python>=8.2.0
+pandas>=2.1.3
+numpy>=1.26.2
+scikit-learn>=1.3.2
+joblib>=1.3.2
+requests>=2.31.0
+gunicorn>=21.2.0
+Werkzeug>=3.0.1
