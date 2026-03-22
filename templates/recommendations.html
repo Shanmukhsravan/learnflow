@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Your AI Recommendations - LearnFlow{% endblock %}
+{% block body_class %}auth-page login-body{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+<style>
+    .recommendations-wrapper {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 3rem;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 32px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15),
+            0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    }
+
+    .rec-header {
+        text-align: center;
+    }
+
+    .rec-header h2 {
+        font-size: 2.8rem;
+        font-weight: 800;
+        background: linear-gradient(to right, #1e293b, #475569);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+        letter-spacing: -1px;
+    }
+
+    .rec-header p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+    }
+
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .course-card {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    .match-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #e0f2fe;
+        color: #0284c7;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .course-level {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+
+    .course-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.8rem;
+        line-height: 1.3;
+    }
+
+    .course-desc {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        flex-grow: 1;
+        margin-bottom: 1.5rem;
+    }
+
+    .proceed-section {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-proceed {
+        padding: 1rem 2.5rem;
+        border: none;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-proceed:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px -5px rgba(79, 70, 229, 0.5);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mesh-bg"></div>
+
+<div class="app-container">
+    <div class="recommendations-wrapper">
+
+        <div class="rec-header">
+            <h2>Your Curriculum.</h2>
+            <p>Our AI selected these {{ subject }} courses specifically for you based on pattern analysis.</p>
+        </div>
+
+        <div class="course-grid">
+            {% for course in courses %}
+            <div class="course-card">
+                <div class="match-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                    AI Match
+                </div>
+                <div class="course-level">{{ course.level }}</div>
+                <div class="course-title">{{ course.title }}</div>
+                <div class="course-desc">
+                    {{ course.description }}
+                </div>
+            </div>
+            {% else %}
+            <div style="text-align: center; padding: 3rem; grid-column: 1 / -1; color: var(--text-secondary);">
+                <em>Not enough data to generate recommendations yet.</em>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="proceed-section">
+            <form method="POST" action="/assessment">
+                <input type="hidden" name="subject" value="{{ subject }}">
+                <button type="submit" class="btn-proceed">
+                    Start Learning
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Level {{ level }} Quiz - {{ course.title }}{% endblock %}
+
+{% block extra_css %}
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .quiz-header h2 {
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .quiz-header p {
+            color: #64748b;
+        }
+        .timer-badge {
+            display: inline-block;
+            background: #ffe4e6;
+            color: #e11d48;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        .question-card {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        .question-card h5 {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+        .option-label {
+            display: block;
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option-label:hover {
+            border-color: #4f46e5;
+            background: #f8fafc;
+        }
+        .option-label input {
+            margin-right: 10px;
+        }
+        .btn-submit {
+            background: linear-gradient(135deg, #4f46e5, #4338ca);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="quiz-container">
+        
+        <div class="quiz-header">
+            <h2>Level {{ level }} Quiz</h2>
+            <p>{{ course.title }}</p>
+            <div class="timer-badge">
+                ⏱️ Time: <span id="display-time">0</span>s
+            </div>
+            <p class="text-muted mt-2 small">Your speed and accuracy will be evaluated by the LearnFlow AI model to determine if you pass.</p>
+        </div>
+
+        <form action="/course/{{ course.id }}/quiz/{{ level }}" method="POST" id="quizForm">
+            <input type="hidden" name="time_taken" id="time_taken" value="0">
+            
+            {% for q in questions %}
+            {% set q_idx = loop.index0 %}
+            <div class="question-card">
+                <h5>{{ loop.index }}. {{ q.question }}</h5>
+                {% for opt in q.options %}
+                <label class="option-label">
+                    <input type="radio" name="q_{{ q_idx }}" value="{{ opt }}" required>
+                    {{ opt }}
+                </label>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            
+            <button type="submit" class="btn-submit">Submit Responses for AI Evaluation</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Simple timer script to track seconds taken
+    let seconds = 0;
+    const timeDisplay = document.getElementById('display-time');
+    const timeInput = document.getElementById('time_taken');
+    
+    setInterval(() => {
+        seconds++;
+        timeDisplay.innerText = seconds;
+        timeInput.value = seconds;
+    }, 1000);
+</script>
+{% endblock %}

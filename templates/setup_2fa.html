@@ -1,18 +1,84 @@
-<h2>Enable 2FA</h2>
+{% extends "base.html" %}
 
-<h3>Scan QR Code</h3>
-<img src="data:image/png;base64,{{ qr_code }}">
+{% block title %}Setup 2FA - LearnFlow{% endblock %}
+{% block body_class %}auth-page login-body{% endblock %}
 
-<hr>
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
 
-<h3>OR Enter Secret Manually</h3>
-<p><strong>Secret Key:</strong> {{ secret }}</p>
+{% block content %}
+<div class="mesh-bg"></div>
 
-<p>
-In Google Authenticator:<br>
-1. Click + <br>
-2. Choose "Enter setup key"<br>
-3. Account name: LearnFlow AI<br>
-4. Enter secret above<br>
-5. Type: Time-based
-</p>
+<div class="app-container">
+    <div class="login-wrapper">
+
+        <!-- Left Panel -->
+        <div class="brand-panel">
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+                LearnFlow
+            </div>
+
+            <div class="hero-content">
+                <h1 class="hero-title">Secure<br />Account</h1>
+                <p class="hero-subtitle">
+                    Enable Two-Factor Authentication (2FA) to add an extra layer of security to your LearnFlow account.
+                </p>
+            </div>
+
+            <div style="font-size: 0.85rem; color: #64748b; font-weight: 500;">
+                &copy; 2026 LearnFlow Platform. All rights reserved.
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="form-panel" style="overflow-y: auto;">
+            <div class="form-header">
+                <h2>Enable 2FA</h2>
+                <p>Scan QR Code with Authenticator App</p>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <img src="data:image/png;base64,{{ qr_code }}" style="border-radius: 12px; border: 2px solid var(--border-color); padding: 10px; background: white;">
+            </div>
+
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+
+            <div style="text-align: center;">
+                <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0.5rem;">Enter Secret Manually:</p>
+                <div style="background: var(--input-bg); padding: 12px; border-radius: 12px; font-weight: 700; font-family: monospace; font-size: 1.1rem; letter-spacing: 2px; color: var(--primary-color); margin-bottom: 1.5rem;">
+                    {{ secret }}
+                </div>
+                
+                <div style="text-align: left; background: rgba(79, 70, 229, 0.05); padding: 1rem; border-radius: 12px; border: 1px solid rgba(79, 70, 229, 0.1); font-size: 0.85rem; color: var(--text-secondary);">
+                    <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">In Google Authenticator or Authy:</p>
+                    <ol style="margin: 0; padding-left: 1.2rem;">
+                        <li>Click the <strong>+</strong> icon</li>
+                        <li>Choose <strong>"Enter setup key"</strong></li>
+                        <li>Account name: <strong>LearnFlow AI</strong></li>
+                        <li>Enter the secret key from above</li>
+                        <li>Type: Time-based</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <a href="/dashboard" class="submit-btn" style="display: inline-block; text-decoration: none;">
+                    I have scanned it, Continue
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -68,7 +68,8 @@
     </div>
 
     <a href="/dashboard">Dashboard</a>
-    <a href="/batches">Batches</a>
+    <a href="/my-courses">My Courses</a>
+    <a href="/batches">Course Catalog</a>
     <a href="{{ url_for('tests') }}">Tests</a>
     
 
@@ -98,7 +99,7 @@
         </button>
 
         <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="/profile">Profile</a></li>
             <li><a class="dropdown-item" href="/logout">Logout ⏻</a></li>
         </ul>
     </div>
@@ -114,15 +115,22 @@
 
     <div class="col-md-3">
         <div class="metric-card">
-            <h6>Total Tests</h6>
+            <h6>Tests Attempted</h6>
             <h2 class="counter" data-target="{{ total_tests }}">{{ total_tests }}</h2>
         </div>
     </div>
 
     <div class="col-md-3">
         <div class="metric-card">
+            <h6>Pass Rate</h6>
+            <h2 class="counter" data-target="{{ pass_rate }}">{{ pass_rate }} </h2> <span class="fs-4 fw-bold">%</span>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="metric-card">
             <h6>Average Score</h6>
-            <h2 class="counter" data-target="{{ avg_score }}">{{ avg_score }} </h2> %
+            <h2 class="counter" data-target="{{ avg_score }}">{{ avg_score }} </h2> <span class="fs-4 fw-bold">%</span>
         </div>
     </div>
 
@@ -130,21 +138,6 @@
         <div class="metric-card">
             <h6>Status</h6>
             <h5>{{ status }}</h5>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="metric-card">
-            <h6>Consistency</h6>
-
-            {% if avg_score >= 75 %}
-                <h5 class="text-success">High 🔥</h5>
-            {% elif avg_score > 0 %}
-                <h5 class="text-warning">Improving ⏳</h5>
-            {% else %}
-                <h5 class="text-secondary">No Data</h5>
-            {% endif %}
-
         </div>
     </div>
 
@@ -157,113 +150,116 @@
     <a href="/batches" class="btn btn-primary btn-sm">Explore Batches</a>
 </div>
 
-<!-- CHART -->
+<!-- RECENT QUIZZES HISTORY & ANALYTICS -->
 <div class="card mt-4 p-3 shadow-sm">
-    <h5>📈 Performance Trend</h5>
+    <h5 class="mb-4">📚 Recent Quizzes & Performance Analysis</h5>
 
-    {% if subjects %}
-        <canvas id="scoreChart"></canvas>
-    {% else %}
-        <p class="text-muted">No performance data available yet.</p>
-    {% endif %}
-</div>
+    <!-- Tabs for Switching Views -->
+    <ul class="nav nav-tabs mb-3" id="analyticsTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" style="color: #4f46e5;">Quiz History</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold" id="weak-topics-tab" data-bs-toggle="tab" data-bs-target="#weak-topics" type="button" role="tab" style="color: #db2777;">Weak Topics Analysis</button>
+        </li>
+    </ul>
 
-<!-- SUBJECT PROGRESS -->
-<div class="card mt-4 p-3 shadow-sm">
-    <h5>📚 Subject-wise Progress</h5>
-
-    {% if subjects %}
-        {% for i in range(subjects|length) %}
-        <div class="mb-3">
-            <strong>{{ subjects[i] }}</strong>
-            <div class="progress">
-                <div class="progress-bar bg-success"
-                     style="width: {{ scores[i] }}%">
-                     {{ scores[i] }}%
+    <div class="tab-content" id="analyticsTabsContent">
+        <!-- QUIZ HISTORY TAB -->
+        <div class="tab-pane fade show active" id="history" role="tabpanel">
+            {% if recent_quizzes %}
+                <div class="table-responsive mt-3">
+                    <table class="table table-hover align-middle">
+                        <thead style="background-color: #f8f9fa;">
+                            <tr>
+                                <th>Course</th>
+                                <th>Level</th>
+                                <th>Score</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for qz in recent_quizzes %}
+                            <tr>
+                                <td class="fw-bold">{{ qz.course_name }}</td>
+                                <td>Level {{ qz.level }}</td>
+                                <td>{{ qz.score }}%</td>
+                                <td>
+                                    {% if qz.passed %}
+                                        <span class="badge bg-success shadow-sm">Passed</span>
+                                    {% else %}
+                                        <span class="badge bg-danger shadow-sm">Failed</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-muted">{{ qz.attempted_at.strftime('%b %d, %Y') }}</td>
+                                <td>
+                                    {% if qz.has_report %}
+                                        <a href="{{ url_for('quiz_analysis', attempt_id=qz.id) }}" class="btn btn-sm btn-outline-primary rounded-pill"><i class="bi bi-bar-chart-fill me-1"></i> Analysis</a>
+                                    {% else %}
+                                        <span class="text-muted small">N/A</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
+            {% else %}
+                <p class="text-muted mt-3">No quiz attempts yet. Complete modules and unlock level quizzes to see your history!</p>
+            {% endif %}
+        </div>
+
+        <!-- WEAK TOPICS TAB -->
+        <div class="tab-pane fade" id="weak-topics" role="tabpanel">
+            {% if weak_topics %}
+                <div class="table-responsive mt-3">
+                    <table class="table table-hover align-middle">
+                        <thead style="background-color: #f8f9fa;">
+                            <tr>
+                                <th>Weak Topic</th>
+                                <th>Mistakes</th>
+                                <th>Recommended Resource</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for wt in weak_topics %}
+                            <tr>
+                                <td class="fw-bold fs-6">{{ wt.topic }}</td>
+                                <td><span class="badge bg-danger px-2 py-1 shadow-sm"><i class="bi bi-x-circle"></i> {{ wt.failed_count }}</span></td>
+                                <td>
+                                    <a href="{{ wt.recommended_video_url }}" target="_blank" class="btn btn-sm btn-primary shadow-sm" style="border-radius: 8px;">
+                                        📺 {{ wt.recommended_video_title }}
+                                    </a>
+                                    <a href="/batches" class="btn btn-sm btn-outline-secondary shadow-sm" style="border-radius: 8px;">Explore Courses</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-success mt-3 shadow-sm border-0" role="alert">
+                    Great job! You haven't failed any topics yet. Keep up the excellent work! 🎉
+                </div>
+            {% endif %}
+
+            <!-- LATEST QUIZ DETAILED REPORT BUTTON -->
+            {% if latest_report %}
+            <hr class="my-5" style="border-color: #e2e8f0;">
+            <div class="text-center bg-light p-4 rounded-3 border">
+                <h5 class="mb-3">📊 Last Quiz Detailed Report</h5>
+                <p class="text-muted mb-4">View a complete breakdown of your most recent quiz, including your answers, correct answers, and specific areas for improvement.</p>
+                <a href="{{ url_for('quiz_analysis_latest') }}" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm fw-bold">
+                    <i class="bi bi-bar-chart-fill me-2"></i> View Detailed Analysis
+                </a>
             </div>
-        </div>
-        {% endfor %}
-    {% else %}
-        <p class="text-muted">Attempt tests to see subject progress.</p>
-    {% endif %}
-</div>
-
-<!-- INSIGHTS -->
-<div class="row mt-4">
-
-    <div class="col-md-6">
-        <div class="card p-3 shadow-sm">
-            <h5>💪 Strong Area</h5>
-
-            {% if subjects %}
-                <p>{{ subjects[scores.index(scores|max)] }}</p>
-            {% else %}
-                <p>No Data</p>
             {% endif %}
+            
         </div>
     </div>
-
-    <div class="col-md-6">
-        <div class="card p-3 shadow-sm">
-            <h5>⚠️ Needs Improvement</h5>
-
-            {% if subjects %}
-                <p>{{ subjects[scores.index(scores|min)] }}</p>
-            {% else %}
-                <p>No Data</p>
-            {% endif %}
-        </div>
-    </div>
-
 </div>
-
-<!-- ACHIEVEMENTS -->
-<div class="card mt-4 p-3 shadow-sm">
-    <h5>🏆 Achievements</h5>
-
-    {% if total_tests >= 5 %}
-        <span class="badge bg-success">5+ Tests Completed</span>
-    {% endif %}
-
-    {% if avg_score >= 80 %}
-        <span class="badge bg-warning text-dark">Top Performer</span>
-    {% endif %}
-
-    {% if avg_score >= 60 %}
-        <span class="badge bg-info">Consistent Learner</span>
-    {% endif %}
-
-    {% if total_tests == 0 %}
-        <p class="text-muted mt-2">Start attempting tests to unlock achievements.</p>
-    {% endif %}
-</div>
-
-</div>
-</div>
-</div>
-</div>
-<!-- CHART SCRIPT -->
-<script>
-const subjects = {{ subjects | tojson }};
-const scores = {{ scores | tojson }};
-
-if (subjects.length > 0) {
-    new Chart(document.getElementById("scoreChart"), {
-        type: "line",
-        data: {
-            labels: subjects,
-            datasets: [{
-                label: "Score (%)",
-                data: scores,
-                borderWidth: 3,
-                fill: false,
-                tension: 0.3
-            }]
-        }
-    });
-}
-</script>
 
 <!-- COUNTER ANIMATION -->
 <script>
@@ -315,5 +311,6 @@ function toggleSidebar(){
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    {% include 'chatbot.html' %}
 </body>
 </html>

@@ -1,26 +1,73 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>LearnFlow Batches</title>
+{% extends "base.html" %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-    </head>
-    <body class="container mt-5 text-center">
-      <div class="col-md-15">
-          <h3>Admin Verification</h3> <hr>
-          <table  cellpadding="10" class="container mt-5 text-center">
-            <tr><td>
-<form method="POST">
-    <input type="password" name="admin_password" placeholder="Enter Admin Secret" required>
-    <button type="submit" class="btn btn-secondary">Verify</button>
-</form>
-</td></tr>
-</table>
-<button onclick="history.back()" class="back-btn">
-    ⬅ Back
-</button>
+{% block title %}Admin Auth - LearnFlow{% endblock %}
+{% block body_class %}auth-page login-body{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="mesh-bg"></div>
+
+<div class="app-container">
+    <div class="login-wrapper">
+
+        <!-- Left Panel -->
+        <div class="brand-panel">
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+                LearnFlow
+            </div>
+
+            <div class="hero-content">
+                <h1 class="hero-title">Admin<br />Access</h1>
+                <p class="hero-subtitle">
+                    Secure portal for administrators. Please verify your identity to access the dashboard.
+                </p>
+            </div>
+
+            <div style="font-size: 0.85rem; color: #64748b; font-weight: 500;">
+                &copy; 2026 LearnFlow Platform. All rights reserved.
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="form-panel">
+            <div class="form-header">
+                <h2>Administration</h2>
+                <p>Admin Verification</p>
+            </div>
+
+            <form method="POST">
+                
+                <div class="input-wrapper">
+                    <label for="admin_password">Enter Admin Secret</label>
+                    <input type="password" id="admin_password" name="admin_password" class="input-element" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="submit-btn" style="margin-top: 1rem;">
+                    Verify
+                </button>
+
+            </form>
+
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+
+            <div class="create-account">
+                <a href="#" onclick="history.back(); return false;">⬅ Back</a>
+            </div>
+
+        </div>
+
+    </div>
 </div>
-</body>
-</html>
-
+{% endblock %}

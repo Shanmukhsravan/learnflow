@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Course - Teacher Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-color: #a855f7; --bg-light: #f8fafc; --text-dark: #1e293b; --card-bg: #ffffff; --sidebar-width: 260px; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--text-dark); overflow-x: hidden; }
+        .sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; top: 0; left: 0; background: linear-gradient(180deg, #1e1e2f 0%, #151522 100%); color: #fff; padding-top: 2rem; z-index: 1000; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
+        .sidebar-brand { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .sidebar-brand i { color: var(--primary-color); }
+        .nav-link { color: rgba(255,255,255,0.7); padding: 12px 24px; font-weight: 500; display: flex; align-items: center; gap: 12px; border-left: 4px solid transparent; }
+        .nav-link:hover, .nav-link.active { color: #fff; background-color: rgba(255,255,255,0.05); border-left-color: var(--primary-color); }
+        .main-content { margin-left: var(--sidebar-width); padding: 2rem; min-height: 100vh; }
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: var(--card-bg); padding: 1rem 2rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .form-container { background: var(--card-bg); border-radius: 16px; padding: 2.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); max-width: 800px; margin: 0 auto; }
+        .form-label { font-weight: 500; color: var(--text-dark); margin-bottom: 0.5rem; }
+        .form-control, .form-select { padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.95rem; }
+        .form-control:focus, .form-select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2); }
+        .btn-custom { background-color: var(--primary-color); color: #fff; padding: 0.75rem 1.5rem; font-weight: 600; border-radius: 8px; border: none; transition: all 0.2s ease; }
+        .btn-custom:hover { background-color: #9333ea; transform: translateY(-1px); box-shadow: 0 4px 6px -1px rgba(147, 51, 234, 0.3); }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-brand"><i class="bi bi-mortarboard-fill"></i> LearnFlow</div>
+        <ul class="nav flex-column mt-4">
+            <li class="nav-item"><a class="nav-link" href="/teacher"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/teacher/courses"><i class="bi bi-journal-bookmark-fill"></i> My Courses</a></li>
+            <li class="nav-item"><a class="nav-link" href="/teacher/upload"><i class="bi bi-cloud-arrow-up-fill"></i> Upload Content</a></li>
+            <li class="nav-item"><a class="nav-link" href="/teacher/performance"><i class="bi bi-graph-up-arrow"></i> Student Performance</a></li>
+            <li class="nav-item mt-4"><a class="nav-link text-danger" href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="top-header">
+            <div>
+                <a href="/teacher/courses" class="text-decoration-none text-muted small"><i class="bi bi-arrow-left"></i> Back to Courses</a>
+                <h4 class="mb-0 fw-bold mt-2">Edit Course</h4>
+            </div>
+            <a href="/teacher/course/{{ course.id }}/modules" class="btn btn-outline-primary rounded-pill px-4"><i class="bi bi-collection-play"></i> Manage Modules</a>
+        </div>
+        
+        <div class="form-container">
+            <form method="POST" action="/teacher/course/{{ course.id }}/edit">
+                <div class="row g-4">
+                    <div class="col-md-12">
+                        <label class="form-label">Course Title</label>
+                        <input type="text" name="title" class="form-control" value="{{ course.title }}" required>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">Subject Category</label>
+                        <select name="subject" class="form-select" required>
+                            <option value="Mathematics" {% if course.subject == 'Mathematics' %}selected{% endif %}>Mathematics</option>
+                            <option value="Science" {% if course.subject == 'Science' %}selected{% endif %}>Science</option>
+                            <option value="Programming" {% if course.subject == 'Programming' %}selected{% endif %}>Programming</option>
+                            <option value="Languages" {% if course.subject == 'Languages' %}selected{% endif %}>Languages</option>
+                            <option value="Design" {% if course.subject == 'Design' %}selected{% endif %}>Design</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">Difficulty Level</label>
+                        <select name="level" class="form-select" required>
+                            <option value="1" {% if course.level == 1 %}selected{% endif %}>Beginner (Level 1)</option>
+                            <option value="2" {% if course.level == 2 %}selected{% endif %}>Intermediate (Level 2)</option>
+                            <option value="3" {% if course.level == 3 %}selected{% endif %}>Advanced (Level 3)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <label class="form-label">Course Description</label>
+                        <textarea name="description" class="form-control" rows="4" required>{{ course.description }}</textarea>
+                    </div>
+                    
+                    <div class="col-md-12 mt-5">
+                        <hr>
+                        <h5 class="fw-bold mb-4 text-primary"><i class="bi bi-stack"></i> Quick Add New Modules</h5>
+                        <p class="small text-muted mb-4">Append new modules into the existing levels below while you edit. <br><em>(To delete or organize previously uploaded content, click "Manage Modules" at the top right)</em></p>
+                        
+                        <!-- LEVEL 1 -->
+                        <div class="mb-4 p-4 bg-light rounded-4 border">
+                            <h6 class="fw-bold mb-3 text-success">Level 1: Beginner Modules</h6>
+                            <div id="modules_1"></div>
+                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 mt-2" onclick="addMod(1)"><i class="bi bi-plus"></i> Append Level 1 Module</button>
+                        </div>
+
+                        <!-- LEVEL 2 -->
+                        <div class="mb-4 p-4 bg-light rounded-4 border">
+                            <h6 class="fw-bold mb-3 text-warning">Level 2: Intermediate Modules</h6>
+                            <div id="modules_2"></div>
+                            <button type="button" class="btn btn-sm btn-outline-warning text-dark rounded-pill px-3 mt-2" onclick="addMod(2)"><i class="bi bi-plus"></i> Append Level 2 Module</button>
+                        </div>
+
+                        <!-- LEVEL 3 -->
+                        <div class="mb-4 p-4 bg-light rounded-4 border">
+                            <h6 class="fw-bold mb-3 text-danger">Level 3: Advanced Modules</h6>
+                            <div id="modules_3"></div>
+                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 mt-2" onclick="addMod(3)"><i class="bi bi-plus"></i> Append Level 3 Module</button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 text-end mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm" style="background-color: var(--primary-color); border: none;">Save Course Updates</button>
+                    </div>
+                </div>
+            </form>
+            
+            <script>
+                function addMod(lvl) {
+                    const container = document.getElementById('modules_' + lvl);
+                    const row = document.createElement('div');
+                    row.className = 'row g-2 mb-2 align-items-center';
+                    row.innerHTML = `
+                        <div class="col-md-4">
+                            <input type="text" name="m_title_${lvl}" class="form-control form-control-sm" placeholder="Module Title" required>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="m_type_${lvl}" class="form-select form-select-sm" required>
+                                <option value="video">Video URL</option>
+                                <option value="pdf">PDF Link</option>
+                                <option value="article">Article/Reading</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="url" name="m_url_${lvl}" class="form-control form-control-sm" placeholder="https://..." required>
+                        </div>
+                        <div class="col-md-1 text-end">
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" onclick="this.parentElement.parentElement.remove()"><i class="bi bi-x"></i></button>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                }
+            </script>
+        </div>
+    </div>
+</body>
+</html>

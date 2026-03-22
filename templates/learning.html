@@ -1,0 +1,415 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }} - Learning Path{% endblock %}
+{% block body_class %}dashboard-body{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <style>
+        .learning-header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 24px;
+            margin-bottom: 3rem;
+        }
+
+        .modules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .module-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .module-item .title {
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-watch {
+            background: white;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            padding: 5px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-watch:hover {
+            border-color: #4f46e5;
+            color: #4f46e5;
+        }
+
+        .btn-watched {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+            padding: 5px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #4f46e5;
+            transition: width 0.5s ease;
+        }
+
+        .badges-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .badge-medal {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            animation: badgePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        @keyframes badgePop {
+            0% { opacity: 0; transform: scale(0.5) translateY(20px); }
+            50% { opacity: 1; transform: scale(1.1) translateY(-5px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .level-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: var(--transition);
+        }
+        
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+        }
+
+        .level-card.locked {
+            background: #f8fafc;
+            opacity: 0.6;
+            filter: grayscale(100%);
+            pointer-events: none;
+        }
+        
+        .level-card.completed {
+            border-left: 6px solid #10b981;
+        }
+        
+        .level-card.active {
+            border-left: 6px solid #4f46e5;
+            transform: translateX(10px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.1);
+        }
+
+        .level-info h3 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .level-info p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        .btn-quiz {
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            background: var(--primary-color);
+            transition: var(--transition);
+        }
+        
+        .btn-quiz:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-locked {
+            background: #cbd5e1;
+            color: #64748b;
+        }
+
+        .cert-card {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 3rem;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+        
+        .cert-card .btn {
+            background: white;
+            color: #059669;
+            font-weight: bold;
+            border-radius: 20px;
+            padding: 10px 30px;
+            margin-top: 1rem;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- SIDEBAR -->
+        <div class="col-md-2 sidebar">
+            <h4 class="logo">LearnFlow</h4>
+            <a href="/dashboard">Dashboard</a>
+            <a class="active" href="/my-courses">My Courses</a>
+            <a href="/batches">Course Catalog</a>
+            <a href="{{ url_for('tests') }}">Tests</a>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="col-md-10 main p-4">
+
+            <div class="learning-header">
+                <h2>{{ course.title }}</h2>
+                <p>Track your progress, take AI-evaluated quizzes, and earn your certificate.</p>
+                
+                {% if badges %}
+                <div class="badges-container">
+                    {% for badge in badges %}
+                    <div class="badge-medal">{{ badge }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- LEVEL 1: Beginner -->
+            <div class="level-card {% if completed or current_level > 1 %}completed{% elif current_level == 1 %}active{% endif %}">
+                <div class="level-header">
+                    <div class="level-info">
+                        <h3>Level 1: Beginner</h3>
+                        <p>Core concepts and fundamentals.</p>
+                    </div>
+                    <div>
+                        {% if completed or current_level > 1 %}
+                            <span class="text-success fw-bold">✓ Passed</span>
+                        {% else %}
+                            {% set l1_total = mock_modules[1]|length %}
+                            {% if l1_comp|int >= l1_total|int and l1_total|int > 0 %}
+                                <a href="/course/{{ course.id }}/quiz/1" class="btn-quiz">Take Level 1 Quiz</a>
+                            {% else %}
+                                <span class="btn-quiz btn-locked">Watch All Videos to Unlock Quiz</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if current_level == 1 and not completed %}
+                <div class="modules-list">
+                    {% for mod in mock_modules[1] %}
+                    <div class="module-item">
+                        <div class="title">
+                            {% if mod.content_type == 'video' %}🎥
+                            {% elif mod.content_type == 'pdf' %}📄
+                            {% else %}📑{% endif %} {{ mod.title }}
+                            <a href="{{ mod.file_url }}" target="_blank" class="ms-2 small text-primary"><i class="bi bi-link-45deg"></i> Open</a>
+                        </div>
+                        <div>
+                            {% if mod.id in watched_modules %}
+                                <span class="btn-watched">✓ Watched</span>
+                            {% else %}
+                                <form action="/course/{{ course.id }}/mark_watched/{{ mod.id }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn-watch">Mark as Watched</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-muted small">No modules added to this level yet.</p>
+                    {% endfor %}
+                    
+                    {% set l1_total = mock_modules[1]|length %}
+                    {% set progress = (l1_comp / l1_total * 100) if l1_total > 0 else 0 %}
+                    <div class="progress-bar-container">
+                        <div class="progress-fill" style="width: {{ progress }}%;"></div>
+                    </div>
+                    <small class="text-muted mt-1">{{ l1_comp }}/{{ l1_total }} Modules Completed</small>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- LEVEL 2: Intermediate -->
+            <div class="level-card {% if current_level < 2 %}locked{% elif completed or current_level > 2 %}completed{% elif current_level == 2 %}active{% endif %}">
+                <div class="level-header">
+                    <div class="level-info">
+                        <h3>Level 2: Intermediate</h3>
+                        <p>Deeper dive into {{ course.subject }} mechanisms.</p>
+                    </div>
+                    <div>
+                        {% if current_level < 2 %}
+                            <span class="btn-quiz btn-locked">🔒 Locked</span>
+                        {% elif completed or current_level > 2 %}
+                            <span class="text-success fw-bold">✓ Passed</span>
+                        {% else %}
+                            {% set l2_total = mock_modules[2]|length %}
+                            {% if l2_comp|int >= l2_total|int and l2_total|int > 0 %}
+                                <a href="/course/{{ course.id }}/quiz/2" class="btn-quiz">Take Level 2 Quiz</a>
+                            {% else %}
+                                <span class="btn-quiz btn-locked">Watch All Videos to Unlock Quiz</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if current_level == 2 and not completed %}
+                <div class="modules-list">
+                    {% for mod in mock_modules[2] %}
+                    <div class="module-item">
+                        <div class="title">
+                            {% if mod.content_type == 'video' %}🎥
+                            {% elif mod.content_type == 'pdf' %}📄
+                            {% else %}📑{% endif %} {{ mod.title }}
+                            <a href="{{ mod.file_url }}" target="_blank" class="ms-2 small text-primary"><i class="bi bi-link-45deg"></i> Open</a>
+                        </div>
+                        <div>
+                            {% if mod.id in watched_modules %}
+                                <span class="btn-watched">✓ Watched</span>
+                            {% else %}
+                                <form action="/course/{{ course.id }}/mark_watched/{{ mod.id }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn-watch">Mark as Watched</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-muted small">No modules added to this level yet.</p>
+                    {% endfor %}
+                    
+                    {% set l2_total = mock_modules[2]|length %}
+                    {% set progress = (l2_comp / l2_total * 100) if l2_total > 0 else 0 %}
+                    <div class="progress-bar-container">
+                        <div class="progress-fill" style="width: {{ progress }}%;"></div>
+                    </div>
+                    <small class="text-muted mt-1">{{ l2_comp }}/{{ l2_total }} Modules Completed</small>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- LEVEL 3: Advanced -->
+            <div class="level-card {% if current_level < 3 %}locked{% elif completed %}completed{% elif current_level == 3 %}active{% endif %}">
+                <div class="level-header">
+                    <div class="level-info">
+                        <h3>Level 3: Advanced</h3>
+                        <p>Mastery and complex problem solving.</p>
+                    </div>
+                    <div>
+                        {% if current_level < 3 %}
+                            <span class="btn-quiz btn-locked">🔒 Locked</span>
+                        {% elif completed %}
+                            <span class="text-success fw-bold">✓ Passed</span>
+                        {% else %}
+                            {% set l3_total = mock_modules[3]|length %}
+                            {% if l3_comp|int >= l3_total|int and l3_total|int > 0 %}
+                                <a href="/course/{{ course.id }}/quiz/3" class="btn-quiz">Take Final Quiz</a>
+                            {% else %}
+                                <span class="btn-quiz btn-locked">Watch All Videos to Unlock Quiz</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if current_level == 3 and not completed %}
+                <div class="modules-list">
+                    {% for mod in mock_modules[3] %}
+                    <div class="module-item">
+                        <div class="title">
+                            {% if mod.content_type == 'video' %}🎥
+                            {% elif mod.content_type == 'pdf' %}📄
+                            {% else %}📑{% endif %} {{ mod.title }}
+                            <a href="{{ mod.file_url }}" target="_blank" class="ms-2 small text-primary"><i class="bi bi-link-45deg"></i> Open</a>
+                        </div>
+                        <div>
+                            {% if mod.id in watched_modules %}
+                                <span class="btn-watched">✓ Watched</span>
+                            {% else %}
+                                <form action="/course/{{ course.id }}/mark_watched/{{ mod.id }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn-watch">Mark as Watched</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-muted small">No modules added to this level yet.</p>
+                    {% endfor %}
+                    
+                    {% set l3_total = mock_modules[3]|length %}
+                    {% set progress = (l3_comp / l3_total * 100) if l3_total > 0 else 0 %}
+                    <div class="progress-bar-container">
+                        <div class="progress-fill" style="width: {{ progress }}%;"></div>
+                    </div>
+                    <small class="text-muted mt-1">{{ l3_comp }}/{{ l3_total }} Modules Completed</small>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- CERTIFICATE -->
+            {% if completed %}
+            <div class="cert-card">
+                <h3>🎉 Course Completed!</h3>
+                <p>You have successfully passed all levels of this course. Your AI-evaluated performance was excellent.</p>
+                <a href="/certificate/{{ course.id }}" target="_blank" class="btn">View Certificate of Merit</a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

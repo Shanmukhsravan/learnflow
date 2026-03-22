@@ -11,6 +11,8 @@
 
     <!-- Global CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body class="{% block body_class %}{% endblock %} fade-page">

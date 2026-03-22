@@ -1,43 +1,58 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Logging Out</title>
+{% extends "base.html" %}
+
+{% block title %}Logout - LearnFlow{% endblock %}
+{% block body_class %}auth-page login-body{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
     <meta http-equiv="refresh" content="3;url=/login">
-    
-    <style>
-        body {
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            background:#0d6efd;
-            color:white;
-            font-family:Arial;
-        }
+{% endblock %}
 
-        .popup {
-            background:white;
-            color:black;
-            padding:30px 40px;
-            border-radius:12px;
-            box-shadow:0 10px 30px rgba(0,0,0,0.2);
-            animation: fadeScale 0.6s ease;
-            text-align:center;
-        }
+{% block content %}
+<div class="mesh-bg"></div>
 
-        @keyframes fadeScale {
-            from { opacity:0; transform:scale(0.8); }
-            to { opacity:1; transform:scale(1); }
-        }
-    </style>
-</head>
-<body>
+<div class="app-container">
+    <div class="login-wrapper">
 
-<div class="popup">
-    <h3>👋 Goodbye {{ name }}!</h3>
-    <p>You have been logged out successfully.</p>
-    <p>Redirecting to login...</p>
+        <!-- Left Panel -->
+        <div class="brand-panel">
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+                LearnFlow
+            </div>
+
+            <div class="hero-content">
+                <h1 class="hero-title">See you<br />soon.</h1>
+                <p class="hero-subtitle">
+                    Your learning progress is safely stored. We'll be here when you are ready to continue your AI-powered education.
+                </p>
+            </div>
+
+            <div style="font-size: 0.85rem; color: #64748b; font-weight: 500;">
+                &copy; 2026 LearnFlow Platform. All rights reserved.
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="form-panel" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+            <div class="form-header" style="margin-bottom: 2rem;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">👋</div>
+                <h2>Goodbye {{ name }}!</h2>
+                <p>You have been logged out successfully.</p>
+                <p style="color: var(--primary-color); font-weight: 600; margin-top: 1rem;">Redirecting to login...</p>
+            </div>
+            
+            <a href="/login" class="submit-btn" style="text-decoration: none; width: auto; padding-left: 2rem; padding-right: 2rem;">
+                Return to Login Now
+            </a>
+        </div>
+
+    </div>
 </div>
-
-</body>
-</html>
+{% endblock %}

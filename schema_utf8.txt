@@ -1,0 +1,98 @@
+--- Table: backup_codes ---
+id int
+user_id int
+code varchar(20)
+is_used tinyint(1)
+
+--- Table: courses ---
+id int
+title varchar(100)
+subject varchar(50)
+level enum('Beginner','Intermediate','Advanced')
+youtube_link varchar(255)
+image_url varchar(255)
+description text
+created_by int
+
+--- Table: enrollments ---
+id int
+user_id int
+course_id int
+enrolled_at timestamp
+current_level int
+badges text
+completed tinyint(1)
+completed_modules text
+
+--- Table: notifications ---
+id int
+user_id int
+message text
+is_read tinyint(1)
+created_at timestamp
+
+--- Table: payments ---
+id int
+user_id int
+amount decimal(10,2)
+status varchar(20)
+paid_at timestamp
+
+--- Table: performance ---
+id int
+user_id int
+subject varchar(50)
+score int
+date_taken date
+
+--- Table: questions ---
+id int
+quiz_id int
+question text
+option_a varchar(255)
+option_b varchar(255)
+option_c varchar(255)
+option_d varchar(255)
+correct_answers varchar(10)
+difficulty varchar(20)
+
+--- Table: quiz_attempts ---
+id int
+user_id int
+quiz_id int
+score int
+total int
+percentage int
+attempted_at timestamp
+course_id int
+level int
+passed tinyint(1)
+
+--- Table: quizzes ---
+id int
+title varchar(255)
+subject varchar(100)
+level varchar(20)
+created_by int
+created_at timestamp
+type varchar(20)
+status varchar(20)
+
+--- Table: users ---
+id int
+full_name varchar(100)
+email varchar(100)
+password varchar(255)
+otp varchar(10)
+otp_expiry datetime
+created_at timestamp
+last_login date
+streak int
+otp_secret varchar(32)
+twofa_enabled tinyint(1)
+role varchar(20)
+preferred_subject varchar(100)
+recommended_level varchar(50)
+profile_pic varchar(255)
+certificate_name varchar(100)
+

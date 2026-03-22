@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }} - LearnFlow{% endblock %}
+{% block body_class %}dashboard-body{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <style>
+        .details-hero {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 32px;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .details-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .course-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .details-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .details-meta {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .details-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .content-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .content-card p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .enrollment-panel {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            position: sticky;
+            top: 2rem;
+            text-align: center;
+        }
+
+        .price-tag {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .price-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .free-text {
+            color: #10b981;
+        }
+
+        .btn-enroll {
+            width: 100%;
+            padding: 1.2rem;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-enroll.primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-enroll.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-enroll.enrolled {
+            background: #f1f5f9;
+            color: var(--text-primary);
+            border: 2px solid #e2e8f0;
+            pointer-events: none;
+        }
+
+        .btn-youtube {
+            display: block;
+            width: 100%;
+            padding: 1.2rem;
+            border-radius: 16px;
+            background: #ef4444;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            transition: var(--transition);
+        }
+
+        .btn-youtube:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- SIDEBAR -->
+        <div class="col-md-2 sidebar">
+            <h4 class="logo">LearnFlow</h4>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/my-courses">My Courses</a>
+            <a class="active" href="/batches">Course Catalog</a>
+            <a href="{{ url_for('tests') }}">Tests</a>
+            
+            <div class="form-check form-switch mt-4">
+                <input class="form-check-input" type="checkbox" id="darkToggle">
+                <label class="form-check-label text-muted">Dark Mode</label>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="col-md-10 main p-4">
+
+            <!-- HERO -->
+            <div class="details-hero">
+                <div class="hero-content">
+                    <div class="course-badge">{{ course.subject }}</div>
+                    <h1 class="details-title">{{ course.title }}</h1>
+                    
+                    <div class="details-meta">
+                        <div class="meta-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                            {{ course.level }} Level
+                        </div>
+                        <div class="meta-item">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                            Self Paced
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-layout">
+                <!-- LEFT CONTENT -->
+                <div class="content-card">
+                    <h3 class="mb-4 fw-bold">About This Course</h3>
+                    <p>{{ course.description }}</p>
+                    
+                    <h4 class="mt-5 mb-4 fw-bold">What you'll learn</h4>
+                    <ul style="font-size: 1.1rem; color: var(--text-secondary); line-height: 1.8;">
+                        <li>Master the core concepts of {{ course.subject }}</li>
+                        <li>Build a strong foundation for advanced topics</li>
+                        <li>Complete hands-on assignments and assessments</li>
+                    </ul>
+                </div>
+
+                <!-- RIGHT PANEL (Pricing / Enrollment) -->
+                <div class="enrollment-panel">
+                    {% if fee == "Free" %}
+                        <div class="price-tag free-text">Free</div>
+                        <div class="price-label">Included in your plan</div>
+                    {% else %}
+                        <div class="price-tag">{{ fee }}</div>
+                        <div class="price-label">One-time payment</div>
+                    {% endif %}
+
+                    {% if is_enrolled %}
+                        <a href="/learning/{{ course.id }}" style="text-decoration: none;">
+                            <button class="btn-enroll primary" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Continue Learning
+                            </button>
+                        </a>
+                        
+                        {% if course.youtube_link %}
+                        <a href="{{ course.youtube_link }}" target="_blank" class="btn-youtube">
+                            Start Learning ▶
+                        </a>
+                        {% endif %}
+                    {% else %}
+                        <form method="POST" action="/enroll/{{ course.id }}">
+                            <button type="submit" class="btn-enroll primary">Enroll Now</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    const toggle = document.getElementById("darkToggle");
+    if(localStorage.getItem("darkMode") === "enabled"){
+        document.body.classList.add("dark-mode");
+        toggle.checked = true;
+    }
+    toggle.addEventListener("change", function(){
+        document.body.classList.toggle("dark-mode");
+        if(document.body.classList.contains("dark-mode")){
+            localStorage.setItem("darkMode","enabled");
+        }else{
+            localStorage.setItem("darkMode","disabled");
+        }
+    });
+});
+</script>
+{% endblock %}

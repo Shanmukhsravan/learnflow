@@ -2,6 +2,15 @@
    GLOBAL STYLE
 =================================================== */
 
+:root {
+    --primary-color: #4f46e5;
+    --secondary-color: #db2777;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --transition: all 0.3s ease;
+}
+
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
@@ -388,6 +397,33 @@ body.dark-mode p,
 body.dark-mode span,
 body.dark-mode strong {
     color: #e2e8f0;
+}
+
+/* Dropdown Dark Mode */
+body.dark-mode .dropdown-menu {
+    background: #1e293b;
+    border: 1px solid #334155;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .dropdown-item {
+    color: #cbd5e1;
+}
+
+body.dark-mode .dropdown-item:hover,
+body.dark-mode .dropdown-item:focus {
+    background: #0f172a;
+    color: #818cf8;
+}
+
+body.dark-mode .dropdown-divider {
+    border-top-color: #334155;
+}
+
+body.dark-mode .dropdown-toggle {
+    background: #1e293b;
+    color: #f1f5f9;
+    border-color: #334155;
 }
 
 /* ===================================================

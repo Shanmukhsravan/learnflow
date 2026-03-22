@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Content - Teacher Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-color: #a855f7; --bg-light: #f8fafc; --text-dark: #1e293b; --card-bg: #ffffff; --sidebar-width: 260px; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--text-dark); overflow-x: hidden; }
+        .sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; top: 0; left: 0; background: linear-gradient(180deg, #1e1e2f 0%, #151522 100%); color: #fff; padding-top: 2rem; z-index: 1000; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
+        .sidebar-brand { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .sidebar-brand i { color: var(--primary-color); }
+        .nav-link { color: rgba(255,255,255,0.7); padding: 12px 24px; font-weight: 500; display: flex; align-items: center; gap: 12px; border-left: 4px solid transparent; }
+        .nav-link:hover, .nav-link.active { color: #fff; background-color: rgba(255,255,255,0.05); border-left-color: var(--primary-color); }
+        .main-content { margin-left: var(--sidebar-width); padding: 2rem; min-height: 100vh; }
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: var(--card-bg); padding: 1rem 2rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .form-container { background: var(--card-bg); border-radius: 16px; padding: 2.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); max-width: 800px; margin: 0 auto; }
+        .form-control:focus, .form-select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 0.25rem rgba(168, 85, 247, 0.25); }
+        .upload-icon { font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-brand"><i class="bi bi-mortarboard-fill"></i> LearnFlow</div>
+        <ul class="nav flex-column mt-4">
+            <li class="nav-item"><a class="nav-link" href="/teacher"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="/teacher/courses"><i class="bi bi-journal-bookmark-fill"></i> My Courses</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/teacher/upload"><i class="bi bi-cloud-arrow-up-fill"></i> Upload Content</a></li>
+            <li class="nav-item"><a class="nav-link" href="/teacher/performance"><i class="bi bi-graph-up-arrow"></i> Student Performance</a></li>
+            <li class="nav-item mt-4"><a class="nav-link text-danger" href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="top-header">
+            <div>
+                <h4 class="mb-0 fw-bold">Upload New Course</h4>
+                <p class="text-muted small mb-0">Publish a new learning module to the platform</p>
+            </div>
+        </div>
+        
+        <div class="form-container">
+            <div class="text-center mb-4">
+                <i class="bi bi-cloud-arrow-up-fill upload-icon"></i>
+                <h4 class="fw-bold">Course Details</h4>
+            </div>
+            
+            <form action="{{ url_for('teacher_upload_content') }}" method="POST">
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted">COURSE TITLE</label>
+                    <input type="text" class="form-control form-control-lg" name="title" required placeholder="e.g. Advanced Machine Learning">
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">SUBJECT</label>
+                        <select name="subject" class="form-select form-select-lg" required>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Data Science">Data Science</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Design">Design</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">DIFFICULTY LEVEL</label>
+                        <select name="level" class="form-select form-select-lg" required>
+                            <option value="1">Beginner (Level 1)</option>
+                            <option value="2">Intermediate (Level 2)</option>
+                            <option value="3">Advanced (Level 3)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted">COURSE DESCRIPTION</label>
+                    <textarea name="description" class="form-control" rows="4" required placeholder="Briefly explain what students will learn..."></textarea>
+                </div>
+                
+                <hr class="my-5">
+                <h5 class="fw-bold mb-4 text-primary"><i class="bi bi-stack"></i> Module Curriculum Assignments</h5>
+                <p class="small text-muted mb-4">You can instantly populate your course syllabus by adding links explicitly to the 3 progression tiers below.</p>
+                
+                <!-- LEVEL 1 -->
+                <div class="mb-5 p-4 bg-light rounded-4 border">
+                    <h6 class="fw-bold mb-3 text-success">Level 1: Beginner Modules</h6>
+                    <div id="modules_1">
+                        <!-- Intentionally empty, user can add -->
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 mt-2" onclick="addMod(1)"><i class="bi bi-plus"></i> Add Level 1 Module</button>
+                </div>
+
+                <!-- LEVEL 2 -->
+                <div class="mb-5 p-4 bg-light rounded-4 border">
+                    <h6 class="fw-bold mb-3 text-warning">Level 2: Intermediate Modules</h6>
+                    <div id="modules_2"></div>
+                    <button type="button" class="btn btn-sm btn-outline-warning text-dark rounded-pill px-3 mt-2" onclick="addMod(2)"><i class="bi bi-plus"></i> Add Level 2 Module</button>
+                </div>
+
+                <!-- LEVEL 3 -->
+                <div class="mb-5 p-4 bg-light rounded-4 border">
+                    <h6 class="fw-bold mb-3 text-danger">Level 3: Advanced Modules</h6>
+                    <div id="modules_3"></div>
+                    <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 mt-2" onclick="addMod(3)"><i class="bi bi-plus"></i> Add Level 3 Module</button>
+                </div>
+                
+                <div class="d-grid mt-5">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm" style="background-color: var(--primary-color); border: none;">Publish Course & Modules</button>
+                </div>
+            </form>
+
+            <script>
+                function addMod(lvl) {
+                    const container = document.getElementById('modules_' + lvl);
+                    const row = document.createElement('div');
+                    row.className = 'row g-2 mb-2 align-items-center';
+                    row.innerHTML = `
+                        <div class="col-md-4">
+                            <input type="text" name="m_title_${lvl}" class="form-control form-control-sm" placeholder="Module Title" required>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="m_type_${lvl}" class="form-select form-select-sm" required>
+                                <option value="video">Video URL</option>
+                                <option value="pdf">PDF Link</option>
+                                <option value="article">Article/Reading</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="url" name="m_url_${lvl}" class="form-control form-control-sm" placeholder="https://..." required>
+                        </div>
+                        <div class="col-md-1 text-end">
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" onclick="this.parentElement.parentElement.remove()"><i class="bi bi-x"></i></button>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                }
+                
+                // Add one default row to Level 1
+                window.onload = function() { addMod(1); };
+            </script>
+        </div>
+    </div>
+</body>
+</html>

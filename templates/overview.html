@@ -1,89 +1,141 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>LearnFlow Overview</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+{% extends "base.html" %}
 
-<style>
-body{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background: linear-gradient(135deg,#eef2ff,#f8fbff);
-    font-family:'Segoe UI', sans-serif;
-}
+{% block title %}LearnFlow Overview{% endblock %}
+{% block body_class %}auth-page login-body{% endblock %}
 
-.overview-card{
-    background:white;
-    padding:40px;
-    border-radius:20px;
-    box-shadow:0 20px 50px rgba(0,0,0,0.08);
-    max-width:600px;
-    width:100%;
-    animation: fadeIn 0.6s ease;
-}
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <style>
+        .overview-img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: 1.5rem;
+            background: rgba(79, 70, 229, 0.05);
+            padding: 20px;
+            border-radius: 20px;
+        }
 
-.overview-card img{
-    width:100%;
-    max-height:250px;
-    object-fit:contain;
-    margin-bottom:20px;
-}
+        .step-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
 
-@keyframes fadeIn{
-    from{opacity:0; transform:translateY(15px);}
-    to{opacity:1; transform:translateY(0);}
-}
+        .step-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
 
-.nav-buttons a{
-    min-width:120px;
-}
-</style>
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
 
-</head>
+        .nav-buttons .submit-btn {
+            margin: 0;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
 
-<body>
+        .btn-outline {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            box-shadow: none;
+        }
 
-<div class="overview-card text-center">
+        .btn-outline:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.1);
+        }
+    </style>
+{% endblock %}
 
-{% if page == 1 %}
-    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
-    <h2>👋 Welcome to LearnFlow AI</h2>
-    <p>This platform adapts learning based on your performance.</p>
+{% block content %}
+<div class="mesh-bg"></div>
 
-{% elif page == 2 %}
-    <img src="https://cdn-icons-png.flaticon.com/512/4149/4149647.png">
-    <h2>🧠 How It Works</h2>
-    <p>You take assessments. We analyze your performance using AI.</p>
+<div class="app-container">
+    <div class="login-wrapper">
 
-{% elif page == 3 %}
-    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png">
-    <h2>📈 Level System</h2>
-    <p>Beginner → Intermediate → Advanced</p>
-    <p>Score above 75% to get promoted.</p>
+        <!-- Left Panel -->
+        <div class="brand-panel">
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+                LearnFlow
+            </div>
 
-{% elif page == 4 %}
-    <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png">
-    <h2>🏆 Certification</h2>
-    <p>Complete all modules and unlock your certificate.</p>
-    <p>Payment required to download certificate.</p>
+            <div class="hero-content">
+                <h1 class="hero-title">Platform<br />Overview.</h1>
+                <p class="hero-subtitle">
+                    Learn how our adaptive engine personalizes your education to help you achieve your goals.
+                </p>
+            </div>
 
-{% endif %}
+            <div style="font-size: 0.85rem; color: #64748b; font-weight: 500;">
+                &copy; 2026 LearnFlow Platform. All rights reserved.
+            </div>
+        </div>
 
-<div class="mt-4 nav-buttons">
-    {% if page > 1 %}
-    <a href="{{ url_for('overview', page=page-1) }}" class="btn btn-secondary me-2">
-        ⬅ Previous
-    </a>
-    {% endif %}
+        <!-- Right Panel -->
+        <div class="form-panel" style="justify-content: center; text-align: center;">
 
-    <a href="{{ url_for('overview', page=page+1) }}" class="btn btn-primary">
-        Next ➡
-    </a>
+            {% if page == 1 %}
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="overview-img">
+                <h2 class="step-title">👋 Welcome to LearnFlow</h2>
+                <p class="step-desc">This platform adapts learning based on your performance in real-time.</p>
+
+            {% elif page == 2 %}
+                <img src="https://cdn-icons-png.flaticon.com/512/4149/4149647.png" class="overview-img">
+                <h2 class="step-title">🧠 How It Works</h2>
+                <p class="step-desc">You take short assessments. We analyze your performance using AI to recommend your next steps.</p>
+
+            {% elif page == 3 %}
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png" class="overview-img">
+                <h2 class="step-title">📈 Level System</h2>
+                <p class="step-desc">Progress from <strong>Beginner</strong> → <strong>Intermediate</strong> → <strong>Advanced</strong>.<br><br>Score consistently above 75% to get promoted to the next tier.</p>
+
+            {% elif page == 4 %}
+                <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" class="overview-img">
+                <h2 class="step-title">🏆 Certification</h2>
+                <p class="step-desc">Complete all modules to unlock your personalized certificate of achievement.</p>
+
+            {% endif %}
+
+            <div class="nav-buttons" style="justify-content: {% if page > 1 %}space-between{% else %}flex-end{% endif %};">
+                {% if page > 1 %}
+                <a href="{{ url_for('overview', page=page-1) }}" class="submit-btn btn-outline" style="flex: 1;">
+                    ⬅ Previous
+                </a>
+                {% endif %}
+
+                <a href="{{ url_for('overview', page=page+1) }}" class="submit-btn" style="flex: 1;">
+                    Next ➡
+                </a>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div style="display: flex; justify-content: center; gap: 8px; margin-top: 2rem;">
+                <div style="width: 10px; height: 10px; border-radius: 5px; background: {% if page == 1 %}var(--primary-color){% else %}var(--border-color){% endif %};"></div>
+                <div style="width: 10px; height: 10px; border-radius: 5px; background: {% if page == 2 %}var(--primary-color){% else %}var(--border-color){% endif %};"></div>
+                <div style="width: 10px; height: 10px; border-radius: 5px; background: {% if page == 3 %}var(--primary-color){% else %}var(--border-color){% endif %};"></div>
+                <div style="width: 10px; height: 10px; border-radius: 5px; background: {% if page == 4 %}var(--primary-color){% else %}var(--border-color){% endif %};"></div>
+            </div>
+
+        </div>
+
+    </div>
 </div>
-
-</div>
-
-</body>
-</html>
+{% endblock %}

@@ -1,94 +1,135 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Select Role</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+{% extends "base.html" %}
 
-<style>
-body{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background: linear-gradient(135deg,#eef2ff,#f8fbff);
-    font-family:'Segoe UI', sans-serif;
-}
+{% block title %}Select Role - LearnFlow{% endblock %}
+{% block body_class %}auth-page login-body{% endblock %}
 
-.role-card{
-    background:white;
-    padding:50px;
-    border-radius:20px;
-    box-shadow:0 20px 50px rgba(0,0,0,0.08);
-    width:100%;
-    max-width:450px;
-    animation: fadeIn 0.5s ease;
-}
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <style>
+        .role-btn {
+            width: 100%;
+            padding: 1.25rem;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
 
-.role-card h3{
-    font-weight:700;
-    margin-bottom:10px;
-}
+        .student-btn {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(99, 102, 241, 0.1));
+            color: var(--primary-color);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
 
-.role-card p{
-    color:#6c757d;
-    margin-bottom:30px;
-}
+        .student-btn:hover {
+            transform: translateY(-4px);
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: white;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+        }
 
-.role-btn{
-    width:100%;
-    padding:15px;
-    border-radius:12px;
-    font-weight:600;
-    font-size:16px;
-    transition:0.3s ease;
-}
+        .admin-btn {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.1));
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
 
-.role-btn:hover{
-    transform:translateY(-3px);
-    box-shadow:0 10px 25px rgba(0,0,0,0.15);
-}
+        .admin-btn:hover {
+            transform: translateY(-4px);
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        }
 
-.student-btn{
-    background:linear-gradient(135deg,#4f46e5,#6366f1);
-    border:none;
-    color:white;
-}
+        .teacher-btn {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1));
+            color: #f59e0b;
+            border-color: rgba(245, 158, 11, 0.2);
+        }
 
-.admin-btn{
-    background:linear-gradient(135deg,#dc3545,#ff6b6b);
-    border:none;
-    color:white;
-}
+        .teacher-btn:hover {
+            transform: translateY(-4px);
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+        }
+    </style>
+{% endblock %}
 
-@keyframes fadeIn{
-    from{opacity:0; transform:translateY(15px);}
-    to{opacity:1; transform:translateY(0);}
-}
-</style>
+{% block content %}
+<div class="mesh-bg"></div>
 
-</head>
+<div class="app-container">
+    <div class="login-wrapper">
 
-<body>
+        <!-- Left Panel -->
+        <div class="brand-panel">
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+                LearnFlow
+            </div>
 
-<div class="role-card text-center">
-    <h3>🚀 Select Your Role</h3>
-    <p>Choose how you want to continue in LearnFlow</p>
-    <hr>
+            <div class="hero-content">
+                <h1 class="hero-title">Choose<br />Path.</h1>
+                <p class="hero-subtitle">
+                    Select your role to access the personalized dashboard that's tailored exclusively for your needs.
+                </p>
+            </div>
 
-    <form method="POST">
-        <div class="d-grid gap-3">
+            <div style="font-size: 0.85rem; color: #64748b; font-weight: 500;">
+                &copy; 2026 LearnFlow Platform. All rights reserved.
+            </div>
+        </div>
 
-            <button name="role" value="student" class="btn role-btn student-btn">
-                🎓 Continue as Student
-            </button>
+        <!-- Right Panel -->
+        <div class="form-panel">
+            <div class="form-header">
+                <h2>Select Role</h2>
+                <p>How do you want to continue?</p>
+            </div>
 
-            <button name="role" value="admin" class="btn role-btn admin-btn">
-                🛠 Continue as Admin
-            </button>
+            <form method="POST">
+                
+                <button name="role" value="student" type="submit" class="role-btn student-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                    Continue as Student
+                </button>
+
+                <button name="role" value="teacher" type="submit" class="role-btn teacher-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                    Continue as Teacher
+                </button>
+
+                <button name="role" value="admin" type="submit" class="role-btn admin-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Continue as Admin
+                </button>
+
+            </form>
+
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+
+            <div class="create-account">
+                <a href="/logout">Sign out</a>
+            </div>
 
         </div>
-    </form>
-</div>
 
-</body>
-</html>
+    </div>
+</div>
+{% endblock %}
