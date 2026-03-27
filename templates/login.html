@@ -107,13 +107,24 @@
                 <span>OR SIGN IN AS</span>
             </div>
 
-            <div style="display: flex; gap: 10px; margin-top: 15px; margin-bottom: 25px;">
+            <div style="display: flex; gap: 10px; margin-top: 15px; margin-bottom: 10px;">
                 <button type="button" class="submit-btn" style="background-color: #3b82f6; border-color: #3b82f6; flex: 1; font-size: 0.9rem;" onclick="setLoginRole('Teacher')">
                     Teacher 
                 </button>
                 <button type="button" class="submit-btn" style="background-color: #1e293b; border-color: #1e293b; flex: 1; font-size: 0.9rem;" onclick="setLoginRole('Admin')">
                     Admin 
                 </button>
+            </div>
+
+            <div class="auth-divider" style="margin-top: 15px;">
+                <span>Sign in with</span>
+            </div>
+
+            <div style="margin-top: 15px; margin-bottom: 25px;">
+                <a href="/login/google" class="submit-btn" style="background-color: #ffffff; color: #333; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font-weight: 500;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" width="20" height="20">
+                    Continue with Google
+                </a>
             </div>
 
             <script>

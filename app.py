@@ -14,6 +14,8 @@ import ai_engine
 import quiz_data
 import quiz_ai_engine
 import video_recommender
+from authlib.integrations.flask_client import OAuth
+from authlib.integrations.base_client.errors import OAuthError
 
 ADMIN_SECRET = "learnflow_admin_2026"
 
@@ -23,6 +25,17 @@ app = Flask(__name__)
 app.secret_key = "super_secret_key"
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads', 'profiles')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+oauth = OAuth(app)
+google = oauth.register(
+    name='google',
+    client_id='331549531881-sgpg6lr2hcdr8rut27dfmoqt8knsa1gi.apps.googleusercontent.com',
+    client_secret='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',
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={
+        'scope': 'openid email profile'
+    }
+)
 
 # ---------------- MAIL CONFIG ----------------
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -166,6 +179,85 @@ def login():
         flash("Invalid Credentials!", "danger")
 
     return render_template("login.html")
+
+
+# =====================================================
+# GOOGLE LOGIN
+# =====================================================
+@app.route('/login/google')
+def login_google():
+    redirect_uri = url_for('authorize_google', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+@app.route('/login/google/authorize')
+def authorize_google():
+    try:
+        token = google.authorize_access_token()
+    except OAuthError as e:
+        print(f"Google OAuth Error: {e}")
+        flash("Google login failed. Please try again from the login page without refreshing.", "danger")
+        return redirect(url_for('login'))
+        
+    user_info = token.get('userinfo')
+    
+    if not user_info:
+        flash("Failed to get Google user info.", "danger")
+        return redirect(url_for('login'))
+        
+    email = user_info['email']
+    full_name = user_info.get('name', '')
+    profile_pic = user_info.get('picture', '')
+
+    con = get_connection()
+    if not con:
+        flash("Database connection failed. Please ensure your database is running.", "danger")
+        return redirect(url_for('login'))
+        
+    cur = con.cursor(dictionary=True)
+    cur.execute("SELECT * FROM users WHERE email=%s", (email,))
+    user = cur.fetchone()
+
+    if not user:
+        # Register user
+        try:
+            cur.execute(
+                "INSERT INTO users (full_name, email, password, profile_pic) VALUES (%s,%s,%s,%s)",
+                (full_name, email, generate_password_hash(secrets.token_hex(16)), profile_pic)
+            )
+            user_id = cur.lastrowid
+            session["user_id"] = user_id
+            session["user_name"] = full_name
+            session["role"] = "student"
+            user = {"id": user_id, "full_name": full_name}
+            update_streak_and_notifications(cur, user)
+            con.commit()
+            flash("Account created successfully with Google!", "success")
+        except Exception as e:
+            print(f"Google Registration Error: {e}")
+            flash("Error during Google registration.", "danger")
+            con.close()
+            return redirect(url_for('login'))
+    else:
+        # Login user
+        session["user_id"] = user["id"]
+        session["user_name"] = user["full_name"]
+        session["role"] = user.get("role", "student")
+        
+        # update profile pic if not present
+        if not user.get("profile_pic") and profile_pic:
+            cur.execute("UPDATE users SET profile_pic=%s WHERE id=%s", (profile_pic, user["id"]))
+            
+        update_streak_and_notifications(cur, user)
+        con.commit()
+        
+    con.close()
+    
+    if session.get("role") == "admin":
+        return redirect(url_for("admin_dashboard"))
+    elif session.get("role") == "teacher":
+        return redirect(url_for("teacher_dashboard"))
+    else:
+        return redirect(url_for("dashboard"))
 
 
 # =====================================================
