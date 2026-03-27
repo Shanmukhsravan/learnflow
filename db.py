@@ -8,7 +8,7 @@ def get_connection():
             user=os.environ.get("DB_USER", "root"),
             password=os.environ.get("DB_PASSWORD", "123456789"),
             database=os.environ.get("DB_NAME", "learnflow"),
-            port=int(os.environ.get("DB_PORT", 3306))
+            port=int(os.environ.get("DB_PORT", 19619))
         )
     except Exception as e:
         print("DB ERROR:", e)
