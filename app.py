@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, flash, url_for, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_mail import Mail, Message
 from db import get_connection
 from datetime import datetime, timedelta, date
@@ -22,6 +23,7 @@ ADMIN_SECRET = "learnflow_admin_2026"
 os.environ["GEMINI_API_KEY"] = "AIzaSyDf4lg06bfeIsuOYrIKbKn_6qgGtmtU7EA"
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 app.secret_key = "super_secret_key"
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads', 'profiles')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
