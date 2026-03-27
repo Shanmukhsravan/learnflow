@@ -590,3 +590,48 @@ body.dark-mode .metric-card {
     background: #0f172a;
     color: #e2e8f0;
 }
+
+/* ===================================================
+   MOBILE RESPONSIVENESS (MEDIA QUERIES)
+=================================================== */
+
+@media (max-width: 768px) {
+    /* Make the sidebar a scrollable horizontal navbar on top */
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        display: flex;
+        overflow-x: auto;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+        z-index: 1000;
+    }
+
+    .logo {
+        margin-bottom: 0;
+        margin-right: 20px;
+    }
+
+    .sidebar a {
+        margin-bottom: 0;
+        margin-right: 15px;
+        white-space: nowrap;
+    }
+
+    /* Remove the massive left margin from main content */
+    .main, .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .page-title {
+        font-size: 22px;
+    }
+
+    /* Turn off background floating blob on mobile to improve performance */
+    body::before {
+        display: none;
+    }
+}
