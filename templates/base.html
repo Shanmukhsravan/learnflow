@@ -119,6 +119,37 @@
             display: flex;
             flex-direction: column;
         }
+
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .custom-footer {
+                padding: 30px 15px 15px;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            .footer-bottom-links {
+                text-align: center;
+                margin-bottom: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            .footer-newsletter {
+                width: 100%;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .footer-newsletter input, .footer-newsletter button {
+                width: 100%;
+            }
+        }
     </style>
     
     <footer class="custom-footer">

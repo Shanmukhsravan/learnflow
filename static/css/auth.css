@@ -387,6 +387,25 @@ body.auth-page {
   }
 }
 
+@media (max-width: 480px) {
+  .app-container {
+    padding: 0.5rem;
+  }
+  .brand-panel,
+  .form-panel {
+    padding: 1.5rem;
+  }
+  .hero-title {
+    font-size: 2rem;
+  }
+  .form-header h2 {
+    font-size: 1.8rem;
+  }
+  .input-element {
+    padding: 0.9rem 1rem;
+  }
+}
+
 /* Flash Messages - Toast Style */
 .flash-container {
   position: fixed;

@@ -634,4 +634,18 @@ body.dark-mode .metric-card {
     body::before {
         display: none;
     }
+    
+    /* Responsive Table Wrapper */
+    .table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+    }
+    
+    /* Adjust Card padding for mobile */
+    .card, .batch-card, .metric-card {
+        padding: 16px;
+    }
 }
