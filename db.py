@@ -7,7 +7,8 @@ def get_connection():
             host=os.environ.get("DB_HOST", "localhost"),
             user=os.environ.get("DB_USER", "root"),
             password=os.environ.get("DB_PASSWORD", "123456789"),
-            database=os.environ.get("DB_NAME", "learnflow")
+            database=os.environ.get("DB_NAME", "learnflow"),
+            port=int(os.environ.get("DB_PORT", 3306))
         )
     except Exception as e:
         print("DB ERROR:", e)

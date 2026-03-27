@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - {{ course.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .payment-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        background: #f8fafc;
+        padding: 2rem;
+    }
+    
+    .checkout-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+        max-width: 900px;
+        width: 100%;
+        display: flex;
+        overflow: hidden;
+    }
+
+    .checkout-left {
+        flex: 1;
+        padding: 4rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .checkout-right {
+        flex: 1;
+        padding: 4rem;
+    }
+
+    .card-element {
+        padding: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background: #f8fafc;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-pay {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 30px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        background: var(--primary-color);
+        border: none;
+        transition: 0.3s;
+    }
+
+    .btn-pay:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="payment-container">
+        <div class="checkout-card">
+            <div class="checkout-left">
+                <span class="badge bg-light text-dark mb-3" style="width: fit-content;">Order Summary</span>
+                <h2 class="fw-bold mb-3">{{ course.title }}</h2>
+                <p style="opacity: 0.9; margin-bottom: 2rem;">Secure access to premium content, hands-on projects, and 1-year unlimited access.</p>
+                
+                <h1 class="display-4 fw-bold mb-0">{{ fee }}</h1>
+                <p style="opacity: 0.8;">One-time payment</p>
+                
+                <a href="/course/{{ course.id }}" class="text-white mt-auto text-decoration-none">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Back to Course
+                </a>
+            </div>
+
+            <div class="checkout-right">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold mb-0">Payment Details</h3>
+                    <div class="badge bg-warning text-dark px-3 py-2 fw-bold" style="font-size: 0.9rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1 mb-1"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        Expires in: <span id="timer">05:00</span>
+                    </div>
+                </div>
+                
+                <!-- TABS -->
+                <ul class="nav nav-pills mb-4 pb-2 border-bottom" id="paymentTabs" role="tablist">
+                    <li class="nav-item me-2">
+                        <button class="nav-link active fw-bold shadow-sm" id="card-tab" data-bs-toggle="pill" data-bs-target="#card" type="button" role="tab" style="border-radius: 12px;">Credit Card</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link fw-bold shadow-sm" id="upi-tab" data-bs-toggle="pill" data-bs-target="#upi" type="button" role="tab" style="border-radius: 12px; border: 1px solid #e2e8f0; background: white; color: var(--text-dark);">UPI QR Scan</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <!-- CARD CHECKOUT -->
+                    <div class="tab-pane fade show active" id="card" role="tabpanel">
+                        <form method="POST" action="/process_payment/{{ course.id }}">
+                            <div class="mb-3">
+                                <label class="form-label text-muted fw-bold small">CARDHOLDER NAME</label>
+                                <input type="text" class="form-control card-element" value="{{ name }}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-muted fw-bold small">CARD NUMBER</label>
+                                <input type="text" class="form-control card-element" placeholder="**** **** **** 4242" required>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6 mb-4">
+                                    <label class="form-label text-muted fw-bold small">EXPIRY DATE</label>
+                                    <input type="text" class="form-control card-element" placeholder="MM/YY" required>
+                                </div>
+                                <div class="col-6 mb-4">
+                                    <label class="form-label text-muted fw-bold small">CVC</label>
+                                    <input type="text" class="form-control card-element" placeholder="123" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-pay shadow-sm text-white pay-btn">Pay {{ fee }} securely</button>
+                        </form>
+                    </div>
+
+                    <!-- UPI CHECKOUT -->
+                    <div class="tab-pane fade" id="upi" role="tabpanel" style="text-align: center;">
+                        <div class="mb-4 mt-2">
+                            <p class="text-muted fw-bold small mb-3">SCAN WITH ANY UPI APP</p>
+                            <div style="width: 220px; height: 220px; margin: 0 auto; background: white; padding: 15px; border: 2px dashed var(--border-color); border-radius: 16px; display: flex; align-items: center; justify-content: center; position: relative;">
+                                <!-- Corner decorations -->
+                                <div style="position: absolute; top: 10px; left: 10px; width: 20px; height: 20px; border-top: 3px solid var(--primary-color); border-left: 3px solid var(--primary-color);"></div>
+                                <div style="position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; border-top: 3px solid var(--primary-color); border-right: 3px solid var(--primary-color);"></div>
+                                <div style="position: absolute; bottom: 10px; left: 10px; width: 20px; height: 20px; border-bottom: 3px solid var(--primary-color); border-left: 3px solid var(--primary-color);"></div>
+                                <div style="position: absolute; bottom: 10px; right: 10px; width: 20px; height: 20px; border-bottom: 3px solid var(--primary-color); border-right: 3px solid var(--primary-color);"></div>
+                                
+                                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-dark);">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <rect x="7" y="7" width="3" height="3"></rect>
+                                    <rect x="14" y="7" width="3" height="3"></rect>
+                                    <rect x="7" y="14" width="3" height="3"></rect>
+                                    <rect x="14" y="14" width="3" height="3"></rect>
+                                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                                    <line x1="12" y1="3" x2="12" y2="21"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <h4 class="text-dark fw-bold mb-4">Amount: {{ fee }}</h4>
+                        
+                        <form method="POST" action="/process_payment/{{ course.id }}">
+                            <button type="submit" class="btn btn-primary btn-pay shadow-sm text-white pay-btn" style="background: linear-gradient(135deg, #10b981, #059669);">Simulate UPI Finished</button>
+                        </form>
+                    </div>
+                </div>
+                    
+                    <p class="text-center text-muted small mt-4 mb-0">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        Payments are encrypted and secured.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let timeLeft = 300; // 5 mins in seconds
+        const timerElement = document.getElementById("timer");
+        const payButtons = document.querySelectorAll(".pay-btn");
+        
+        const timerInterval = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerElement.parentElement.classList.replace("bg-warning", "bg-danger");
+                timerElement.parentElement.classList.replace("text-dark", "text-white");
+                timerElement.innerHTML = "Session Expired";
+                
+                payButtons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.innerText = "Payment Session Expired";
+                    btn.style.background = "#64748b"; // gray out
+                    btn.style.boxShadow = "none";
+                });
+            } else {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                if (seconds < 10) seconds = "0" + seconds;
+                timerElement.innerText = `${minutes}:${seconds}`;
+                timeLeft--;
+            }
+        }, 1000);
+
+        // Styling tabs logic
+        document.getElementById("upi-tab").addEventListener("click", function() {
+            this.style.background = "var(--primary-color)";
+            this.style.color = "white";
+            this.classList.remove("shadow-sm");
+            
+            let cardTab = document.getElementById("card-tab");
+            cardTab.style.background = "white";
+            cardTab.style.color = "var(--text-dark)";
+            cardTab.classList.add("shadow-sm");
+            cardTab.style.border = "1px solid #e2e8f0";
+        });
+        
+        document.getElementById("card-tab").addEventListener("click", function() {
+            this.style.background = "var(--primary-color)";
+            this.style.color = "white";
+            this.classList.remove("shadow-sm");
+            this.style.border = "none";
+            
+            let upiTab = document.getElementById("upi-tab");
+            upiTab.style.background = "white";
+            upiTab.style.color = "var(--text-dark)";
+            upiTab.classList.add("shadow-sm");
+            upiTab.style.border = "1px solid #e2e8f0";
+        });
+    });
+</script>
+{% endblock %}

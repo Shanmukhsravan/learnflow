@@ -101,38 +101,51 @@
             <a href="/batches">Course Catalog</a>
             <a href="{{ url_for('tests') }}">Tests</a>
             
-            <div class="form-check form-switch mt-4">
-                <input class="form-check-input" type="checkbox" id="darkToggle">
-                <label class="form-check-label text-muted">Dark Mode</label>
-            </div>
+
         </div>
 
         <!-- MAIN CONTENT -->
         <div class="col-md-10 main p-4">
             
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="page-title mb-0">My Profile</h2>
-                
-                <!-- DROPDOWN -->
+            <div class="hero d-flex justify-content-between align-items-center" style="position: sticky; top: 20px; z-index: 1000; box-shadow: 0 10px 30px rgba(79, 70, 229, 0.2); margin-bottom: 40px;">
+                <!-- LEFT SIDE -->
+                <div>
+                    <h2 class="mb-1" style="font-weight: 700;">AI Learning Insights</h2>
+                    <p class="mb-0" style="opacity: 0.9;">Your personalized learning performance overview</p>
+                </div>
+
+                <!-- RIGHT SIDE (Profile Dropdown) -->
                 <div class="dropdown">
-                    <button class="btn btn-light dropdown-toggle shadow-sm" data-bs-toggle="dropdown" style="border-radius: 30px; padding: 8px 18px; border: 1px solid var(--border-color);">
-                        {% if user.profile_pic %}
-                            <img src="{{ url_for('static', filename='uploads/profiles/' + user.profile_pic) }}" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--primary-color);">
+                    <button class="btn btn-light dropdown-toggle shadow-sm d-flex align-items-center gap-2"
+                            data-bs-toggle="dropdown" style="border-radius: 30px; padding: 6px 16px; border: 1px solid var(--border-color);">
+                        {% if global_user and global_user.profile_pic %}
+                            <img src="{{ url_for('static', filename='uploads/profiles/' + global_user.profile_pic) }}" alt="Profile" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-color);">
                         {% else %}
-                            👤
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold;">
+                                {{ session.user_name[0] if session.user_name else 'U' }}
+                            </div>
                         {% endif %}
-                        <span class="ms-2 fw-medium text-dark">{{ session.user_name }}</span>
+                        <span class="fw-bold text-dark">{{ session.user_name }}</span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow" style="border-radius: 12px; border: none; min-width: 200px;">
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 12px; min-width: 220px; margin-top: 10px;">
                         <li>
                             <div class="px-3 py-2 border-bottom mb-2">
                                 <p class="mb-0 fw-bold text-dark">{{ session.user_name }}</p>
-                                <small class="text-muted">{{ user.email }}</small>
+                                <small class="text-muted">{{ global_user.email if global_user else 'Student' }}</small>
                             </div>
                         </li>
-                        <li><a class="dropdown-item active" href="/profile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Profile Settings</a></li>
+                        <li><a class="dropdown-item fw-medium" href="/profile">👤 Profile Settings</a></li>
+                        <li>
+                            <div class="dropdown-item d-flex align-items-center justify-content-between" style="cursor: pointer; padding-right: 1.5rem;" onclick="document.getElementById('darkToggle').click();">
+                                <span class="fw-medium text-dark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> Dark Mode</span>
+                                <div class="form-check form-switch m-0" onclick="event.stopPropagation();">
+                                    <input class="form-check-input" type="checkbox" id="darkToggle" style="cursor: pointer;">
+                                </div>
+                            </div>
+                        </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="/logout"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout</a></li>
+                        <li><a class="dropdown-item text-danger fw-bold" href="/logout">🚪 Logout</a></li>
                     </ul>
                 </div>
             </div>
@@ -168,7 +181,10 @@
                         </div>
                         <div>
                             <h3 class="fw-bold mb-1">{{ user.full_name }}</h3>
-                            <span class="badge bg-primary rounded-pill px-3 py-2">{{ user.role | title }}</span>
+                            <span class="badge bg-primary rounded-pill px-3 py-2 me-2">{{ user.role | title }}</span>
+                            <span class="badge rounded-pill px-3 py-2 fw-bold" style="background: rgba(249, 115, 22, 0.1); color: #ea580c; border: 1px solid rgba(249, 115, 22, 0.2);">
+                                🔥 {{ user.streak_days if user.streak_days else 0 }} Day Streak
+                            </span>
                         </div>
                     </div>
 
@@ -199,6 +215,60 @@
                         </button>
                     </div>
                 </form>
+
+                <!-- PAID COURSES -->
+                <div class="mt-5 pt-5 border-top">
+                    <h4 class="fw-bold mb-4">My Paid Courses & Billing</h4>
+                    {% if paid_courses %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Course</th>
+                                        <th>Level</th>
+                                        <th>Enrolled On</th>
+                                        <th>Expiry Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% set ns = namespace(found=false) %}
+                                {% for pc in paid_courses %}
+                                    {% if pc.level != 'Beginner' %}
+                                        {% set ns.found = true %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ pc.image_url }}" alt="" width="40" height="40" class="rounded me-3" style="object-fit: cover;">
+                                                    <span class="fw-medium text-dark">{{ pc.title }}</span>
+                                                </div>
+                                            </td>
+                                            <td><span class="badge bg-primary text-white rounded-pill">{{ pc.level }}</span></td>
+                                            <td>{{ pc.enrolled_at.strftime('%b %d, %Y') if pc.enrolled_at else 'N/A' }}</td>
+                                            <td>
+                                                {% if pc.expires_at %}
+                                                    <span class="text-danger fw-bold">{{ pc.expires_at.strftime('%b %d, %Y') }}</span>
+                                                {% else %}
+                                                    <span class="text-success fw-bold">Lifetime</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if not ns.found %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-4">You have not enrolled in any paid courses yet.</td>
+                                    </tr>
+                                {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-light text-center border p-4 mb-0">
+                            You have not enrolled in any paid courses yet.
+                        </div>
+                    {% endif %}
+                </div>
             </div>
 
         </div>

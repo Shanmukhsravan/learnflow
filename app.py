@@ -38,6 +38,17 @@ except ImportError:
     mail = None
     print("Flask-Mail missing, run 'pip install Flask-Mail'")
 
+@app.context_processor
+def inject_user():
+    user = None
+    if "user_id" in session:
+        con = get_connection()
+        cur = con.cursor(dictionary=True)
+        cur.execute("SELECT * FROM users WHERE id=%s", (session["user_id"],))
+        user = cur.fetchone()
+        con.close()
+    return dict(global_user=user)
+
 # --- ROLE DECORATORS ---
 def admin_required(f):
     @wraps(f)
@@ -398,6 +409,24 @@ def dashboard():
     con = get_connection()
     cur = con.cursor(dictionary=True)
 
+    # --- DAILY STREAK LOGIC ---
+    from datetime import date, timedelta
+    today = date.today()
+    cur.execute("SELECT streak_days, last_active_date FROM users WHERE id=%s", (user_id,))
+    user_streak_data = cur.fetchone()
+    
+    if user_streak_data:
+        last_active = user_streak_data["last_active_date"]
+        
+        if last_active == today:
+            pass # Already logged in today
+        elif last_active == today - timedelta(days=1):
+            cur.execute("UPDATE users SET streak_days = streak_days + 1, last_active_date = %s WHERE id = %s", (today, user_id))
+            con.commit()
+        else:
+            cur.execute("UPDATE users SET streak_days = 1, last_active_date = %s WHERE id = %s", (today, user_id))
+            con.commit()
+
     # Legacy notifications logic
     cur.execute("""
         SELECT id, message
@@ -536,9 +565,19 @@ def profile():
 
     cur.execute("SELECT * FROM users WHERE id=%s", (session["user_id"],))
     user = cur.fetchone()
+
+    # Fetch Enrollments for Display
+    cur.execute("""
+        SELECT c.title, c.level, c.image_url, e.enrolled_at, e.expires_at 
+        FROM enrollments e 
+        JOIN courses c ON e.course_id = c.id 
+        WHERE e.user_id = %s
+    """, (session["user_id"],))
+    paid_courses = cur.fetchall()
+
     con.close()
 
-    return render_template("profile.html", user=user)
+    return render_template("profile.html", user=user, paid_courses=paid_courses)
 
 # =====================================================
 # GLOBAL QUIZZES VIEW (/tests)
@@ -1107,14 +1146,81 @@ def enroll(course_id):
         return redirect(url_for("login"))
 
     con = get_connection()
-    cur = con.cursor()
+    cur = con.cursor(dictionary=True)
 
     try:
+        cur.execute("SELECT level FROM courses WHERE id=%s", (course_id,))
+        course = cur.fetchone()
+
+        # If not a free beginner course, route them to checkout.
+        if course and course["level"] != "Beginner":
+            return redirect(url_for("payment", course_id=course_id))
+
         cur.execute("INSERT INTO enrollments (user_id, course_id) VALUES (%s, %s)", (session["user_id"], course_id))
         con.commit()
-        flash("Successfully enrolled in the course!", "success")
+        flash("Successfully enrolled in the free course!", "success")
     except Exception as e:
         flash("You are already enrolled or an error occurred.", "danger")
+    finally:
+        con.close()
+
+    return redirect(url_for("course_details", course_id=course_id))
+
+# ---------------- PAYMENT ----------------
+@app.route("/payment/<int:course_id>")
+def payment(course_id):
+    if "user_id" not in session:
+        flash("Please login first!", "warning")
+        return redirect(url_for("login"))
+
+    con = get_connection()
+    cur = con.cursor(dictionary=True)
+    cur.execute("SELECT * FROM courses WHERE id=%s", (course_id,))
+    course = cur.fetchone()
+    con.close()
+
+    if not course:
+        flash("Course not found.", "danger")
+        return redirect(url_for("batches"))
+
+    if course["level"] == "Beginner":
+        flash("This course is free and doesn't require payment.", "info")
+        return redirect(url_for("course_details", course_id=course_id))
+    elif course["level"] == "Intermediate":
+        fee = "$49.99"
+    else:
+        fee = "$99.99"
+
+    return render_template("payment.html", course=course, fee=fee, name=session["user_name"])
+
+@app.route("/process_payment/<int:course_id>", methods=["POST"])
+def process_payment(course_id):
+    if "user_id" not in session:
+        flash("Please login first!", "warning")
+        return redirect(url_for("login"))
+
+    con = get_connection()
+    cur = con.cursor(dictionary=True)
+    try:
+        cur.execute("SELECT * FROM courses WHERE id=%s", (course_id,))
+        course = cur.fetchone()
+
+        fee = 99.99 if course["level"] == "Advanced" else 49.99
+
+        # Insert Payment
+        cur.execute("INSERT INTO payments (user_id, course_id, amount, status) VALUES (%s, %s, %s, %s)", 
+                   (session["user_id"], course_id, fee, "Completed"))
+
+        # Grant Enrollment with Expiry Time
+        from datetime import datetime, timedelta
+        expires_at = datetime.now() + timedelta(days=365)
+        cur.execute("INSERT INTO enrollments (user_id, course_id, expires_at) VALUES (%s, %s, %s)",
+                   (session["user_id"], course_id, expires_at.strftime('%Y-%m-%d %H:%M:%S')))
+        con.commit()
+        flash("Payment successful! You are now enrolled.", "success")
+    except Exception as e:
+        print("Payment Error:", e)
+        flash("Payment failed or you are already enrolled.", "danger")
     finally:
         con.close()
 
@@ -1127,20 +1233,32 @@ def batches():
         flash("Please login first!", "warning")
         return redirect(url_for("login"))
 
+    search_query = request.args.get("q", "").strip()
+
     con = get_connection()
     cur = con.cursor(dictionary=True)
 
-    cur.execute("""
-        SELECT id, title, subject, level, youtube_link, image_url
-        FROM courses
-    """)
+    if search_query:
+        # Search by title or subject
+        cur.execute("""
+            SELECT id, title, subject, level, youtube_link, image_url
+            FROM courses
+            WHERE title LIKE %s OR subject LIKE %s
+        """, (f"%{search_query}%", f"%{search_query}%"))
+    else:
+        cur.execute("""
+            SELECT id, title, subject, level, youtube_link, image_url
+            FROM courses
+        """)
+        
     batches = cur.fetchall()
     con.close()
 
     return render_template(
         "batches.html",
         batches=batches,
-        name=session["user_name"]
+        name=session["user_name"],
+        search_query=search_query
     )
 
 # ---------------- STREAK FUNCTION ----------------
@@ -1497,6 +1615,23 @@ def admin_dashboard():
         total_quizzes=total_quizzes,
         total_revenue=total_revenue
     )
+
+@app.route("/admin/quizzes")
+@admin_required
+def admin_manage_quizzes():
+    con = get_connection()
+    cur = con.cursor(dictionary=True)
+    
+    cur.execute("""
+        SELECT q.id, q.title, q.subject, q.level, q.type, u.full_name as created_by_name
+        FROM quizzes q
+        LEFT JOIN users u ON q.created_by = u.id
+        ORDER BY q.created_at DESC
+    """)
+    quizzes = cur.fetchall()
+    con.close()
+    
+    return render_template("admin_manage_quizzes.html", quizzes=quizzes)
 
 # =====================================================
 # TEACHER ROUTES
