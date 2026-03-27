@@ -233,7 +233,9 @@ def authorize_google():
             user = {"id": user_id, "full_name": full_name}
             update_streak_and_notifications(cur, user)
             con.commit()
+            con.close()
             flash("Account created successfully with Google!", "success")
+            return redirect(url_for('overview', page=1))
         except Exception as e:
             print(f"Google Registration Error: {e}")
             flash("Error during Google registration.", "danger")
