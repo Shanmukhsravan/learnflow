@@ -13,9 +13,9 @@ RUN pip install gunicorn
 # Copy all the application files
 COPY . .
 
-# Hugging Face Spaces requires apps to run on port 7860
-ENV PORT=7860
-EXPOSE 7860
+# Use dynamic PORT environment variable for Railway (defaults to 8080)
+ENV PORT=8080
+EXPOSE $PORT
 
 # Start the Flask app using Gunicorn with 1 worker and a 120s timeout
-CMD ["gunicorn", "-b", "0.0.0.0:7860", "app:app", "--timeout", "120", "--workers", "1"]
+CMD gunicorn -b 0.0.0.0:$PORT app:app --timeout 120 --workers 1
