@@ -55,6 +55,7 @@
             </li>
         </ul>
     </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -218,6 +219,13 @@
                     sidebar.classList.toggle("collapsed");
                     if(mainContent) mainContent.classList.toggle("expanded");
                 }
+            });
+        }
+
+        const overlay = document.getElementById("sidebarOverlay");
+        if (overlay) {
+            overlay.addEventListener("click", function() {
+                sidebar.classList.remove("mobile-open");
             });
         }
 

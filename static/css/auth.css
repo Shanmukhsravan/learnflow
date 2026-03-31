@@ -88,26 +88,89 @@ body.auth-page {
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 1.8rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+  gap: 15px;
+  font-size: 2.2rem;
+  font-weight: 900;
+  background: -webkit-linear-gradient(45deg, #1e1b4b, #4f46e5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
 }
 
 .logo-circle {
-  width: 48px;
-  height: 48px;
-  background: white;
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, #4f46e5, #ec4899);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  color: var(--primary-color);
+  box-shadow: 0 8px 15px rgba(236, 72, 153, 0.3);
+}
+
+.brand-carousel-item {
+  padding: 3rem;
+  color: white;
+  min-height: 380px;
+  position: relative;
+  border-radius: 20px;
+}
+
+.carousel-badge {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.carousel-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-desc {
+  font-size: 1.1rem;
+  opacity: 0.95;
+  margin-bottom: 2rem;
+  max-width: 90%;
+  line-height: 1.6;
+}
+
+.role-selector-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.role-btn {
+  flex: 1;
+  font-size: 0.9rem !important;
+  padding: 0.8rem !important;
+}
+
+.role-btn.teacher {
+  background-color: #3b82f6 !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+.role-btn.admin {
+  background-color: #1e293b !important;
+  box-shadow: 0 4px 12px rgba(30, 41, 59, 0.3) !important;
 }
 
 .hero-content {
-  margin-top: -4rem;
+  margin-top: -2rem;
 }
 
 .hero-title {
@@ -399,13 +462,23 @@ body.auth-page {
     padding: 1.5rem;
   }
   .hero-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
   .form-header h2 {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
   .input-element {
-    padding: 0.9rem 1rem;
+    padding: 0.8rem 1rem;
+  }
+  .carousel-title {
+    font-size: 1.5rem !important;
+  }
+  .carousel-desc {
+    font-size: 0.9rem !important;
+  }
+  .brand-carousel-item {
+    padding: 1.5rem !important;
+    min-height: 300px !important;
   }
 }
 
@@ -468,7 +541,24 @@ body.auth-page {
   box-shadow: 0 15px 35px rgba(0,0,0,0.03);
   margin-top: 2rem;
   margin-bottom: 2rem;
-  padding: 6rem 4rem;
+}
+
+@media (min-width: 992px) {
+  .landing-section.bg-light {
+    padding: 6rem 4rem;
+  }
+}
+
+@media (max-width: 991px) {
+  .landing-section {
+    padding: 3rem 1.5rem;
+  }
+  .landing-section.bg-light {
+    padding: 3rem 1.5rem;
+  }
+  .section-header h2 {
+    font-size: 2rem;
+  }
 }
 
 .section-header {
@@ -593,8 +683,20 @@ body.auth-page {
 /* Landing Courses Grid */
 .landing-course-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
+  padding: 1rem 0;
+}
+
+@media (max-width: 768px) {
+  .landing-course-grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  .lc-card {
+    min-height: auto;
+  }
 }
 
 .lc-card {
@@ -609,6 +711,27 @@ body.auth-page {
 .lc-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.view-all-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: white;
+  border: 2px dashed #cbd5e1;
+}
+
+.view-all-icon {
+  width: 60px;
+  height: 60px;
+  background: #eff6ff;
+  color: #3b82f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem auto;
 }
 
 .lc-image {
@@ -677,6 +800,38 @@ body.auth-page {
     flex-direction: column;
     text-align: center;
     gap: 1.5rem;
+  }
+}
+
+/* Reviews Flex/Grid */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.review-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 768px) {
+  .reviews-grid {
+    grid-template-columns: 1fr;
+    max-width: 450px;
+    margin: 0 auto;
   }
 }
 

@@ -15,8 +15,8 @@
 
         <!-- Left Panel -->
         <div class="brand-panel">
-            <div class="logo-container" style="font-size: 2.2rem; font-weight: 900; background: -webkit-linear-gradient(45deg, #1e1b4b, #4f46e5); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; align-items: center; letter-spacing: -1px; gap: 15px; display: flex;">
-                <div class="logo-circle" style="background: linear-gradient(135deg, #4f46e5, #ec4899); border: none; box-shadow: 0 8px 15px rgba(236, 72, 153, 0.3); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+            <div class="logo-container">
+                <div class="logo-circle">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
@@ -35,25 +35,25 @@
                         <button type="button" data-bs-target="#loginPromos" data-bs-slide-to="2"></button>
                     </div>
                     <div class="carousel-inner">
-                        <div class="carousel-item active" style="background: radial-gradient(circle at top left, #3b82f6, #4f46e5 80%); padding: 3rem; color: white; min-height: 380px; position: relative;">
-                            <div style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.3);">
+                        <div class="carousel-item active brand-carousel-item" style="background: radial-gradient(circle at top left, #3b82f6, #4f46e5 80%);">
+                            <div class="carousel-badge">
                                 🌟 Premium Learning
                             </div>
-                            <h2 style="font-size: 2.8rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.1; text-shadow: 0 4px 15px rgba(0,0,0,0.1);">Shape your<br>learning path.</h2>
-                            <p style="font-size: 1.1rem; opacity: 0.95; margin-bottom: 2rem; max-width: 90%; line-height: 1.6;">Experience AI-driven personalized education designed exclusively for how you learn best.</p>
+                            <h2 class="carousel-title">Shape your<br>learning path.</h2>
+                            <p class="carousel-desc">Experience AI-driven personalized education designed exclusively for how you learn best.</p>
                             <span class="badge py-2 px-3 fw-bold" style="font-size: 0.9rem; background: white; color: #4f46e5; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">🏆 #1 AI Platform</span>
                             <div style="position: absolute; bottom: 1.5rem; right: 1.5rem; opacity: 0.3;">
                                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                             </div>
                         </div>
-                        <div class="carousel-item" style="background: linear-gradient(135deg, #10b981, #059669); padding: 3rem; color: white; min-height: 380px;">
-                            <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Special Offer: 50% Off!</h2>
-                            <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 2rem;">Enroll in any Advanced Certification Batch today and get a massive discount on your first year.</p>
+                        <div class="carousel-item brand-carousel-item" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <h2 class="carousel-title">Special Offer: 50% Off!</h2>
+                            <p class="carousel-desc">Enroll in any Advanced Certification Batch today and get a massive discount on your first year.</p>
                             <span class="badge bg-light text-success py-2 px-3 fw-bold" style="font-size: 0.9rem;">Limited Time Only</span>
                         </div>
-                        <div class="carousel-item" style="background: linear-gradient(135deg, #db2777, #9d174d); padding: 3rem; color: white; min-height: 380px;">
-                            <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">15 Million+<br>Happy Students</h2>
-                            <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 2rem;">Join India's most trusted and affordable educational platform to achieve your dreams.</p>
+                        <div class="carousel-item brand-carousel-item" style="background: linear-gradient(135deg, #db2777, #9d174d);">
+                            <h2 class="carousel-title">15 Million+<br>Happy Students</h2>
+                            <p class="carousel-desc">Join India's most trusted and affordable educational platform to achieve your dreams.</p>
                             <span class="badge bg-light text-danger py-2 px-3 fw-bold" style="font-size: 0.9rem;">Start Your Journey</span>
                         </div>
                     </div>
@@ -104,11 +104,11 @@
                 <span>OR SIGN IN AS</span>
             </div>
 
-            <div style="display: flex; gap: 10px; margin-top: 15px; margin-bottom: 10px;">
-                <button type="button" class="submit-btn" style="background-color: #3b82f6; border-color: #3b82f6; flex: 1; font-size: 0.9rem;" onclick="setLoginRole('Teacher')">
+            <div class="role-selector-group">
+                <button type="button" class="submit-btn role-btn teacher" onclick="setLoginRole('Teacher')">
                     Teacher 
                 </button>
-                <button type="button" class="submit-btn" style="background-color: #1e293b; border-color: #1e293b; flex: 1; font-size: 0.9rem;" onclick="setLoginRole('Admin')">
+                <button type="button" class="submit-btn role-btn admin" onclick="setLoginRole('Admin')">
                     Admin 
                 </button>
             </div>
@@ -207,17 +207,11 @@
         <p>Master the most demanded skills in the industry with our AI-curated curriculum.</p>
     </div>
 
-    <!-- Scroll Arrows -->
-    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-right: 5%; margin-bottom: 1rem;">
-        <button class="btn btn-outline-primary shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;" onclick="document.getElementById('coursesScroll').scrollBy({left: -320, behavior: 'smooth'})">❮</button>
-        <button class="btn btn-primary shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;" onclick="document.getElementById('coursesScroll').scrollBy({left: 320, behavior: 'smooth'})">❯</button>
-    </div>
-
-    <div id="coursesScroll" class="landing-course-grid" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 2rem; padding: 1rem 5%; scrollbar-width: none; -ms-overflow-style: none;">
+    <div class="landing-course-grid">
         <!-- Hide scrollbar for Chrome/Safari -->
         <style>#coursesScroll::-webkit-scrollbar { display: none; }</style>
 
-        <div class="lc-card" style="min-width: 300px; scroll-snap-align: start; flex: 0 0 auto;">
+        <div class="lc-card">
             <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Web Development" class="lc-image">
             <div class="lc-body">
                 <span class="lc-badge">Bestseller</span>
@@ -229,7 +223,7 @@
                 </div>
             </div>
         </div>
-        <div class="lc-card" style="min-width: 300px; scroll-snap-align: start; flex: 0 0 auto;">
+        <div class="lc-card">
             <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Data Science" class="lc-image">
             <div class="lc-body">
                 <span class="lc-badge">Advanced</span>
@@ -241,7 +235,7 @@
                 </div>
             </div>
         </div>
-        <div class="lc-card" style="min-width: 300px; scroll-snap-align: start; flex: 0 0 auto;">
+        <div class="lc-card">
             <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Cybersecurity" class="lc-image">
             <div class="lc-body">
                 <span class="lc-badge">Trending</span>
@@ -255,9 +249,9 @@
         </div>
 
         <!-- View All Button Card -->
-        <div style="min-width: 300px; scroll-snap-align: start; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 2px dashed #cbd5e1;">
+        <div class="lc-card view-all-card">
             <div class="text-center p-4">
-                <div style="width: 60px; height: 60px; background: #eff6ff; color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto;">
+                <div class="view-all-icon">
                     <i class="bi bi-arrow-right fs-2"></i>
                 </div>
                 <h4 class="fw-bold text-dark mb-2">Want to see more?</h4>
@@ -298,20 +292,8 @@
             <div id="reviewMessage" style="margin-top: 1rem; font-weight: 600; display: none;"></div>
         </div>
 
-        <!-- Reviews Carousel Container -->
-        <div style="position: relative;">
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 1rem;">
-                <button class="btn btn-outline-primary shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;" onclick="document.getElementById('reviewsList').scrollBy({left: -320, behavior: 'smooth'})">❮</button>
-                <button class="btn btn-primary shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;" onclick="document.getElementById('reviewsList').scrollBy({left: 320, behavior: 'smooth'})">❯</button>
-            </div>
-            
-            <div id="reviewsList" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 1.5rem; padding-bottom: 1rem; scrollbar-width: none; -ms-overflow-style: none;">
-                <!-- Hide scrollbar for Chrome/Safari -->
-                <style>#reviewsList::-webkit-scrollbar { display: none; }</style>
-
-                <!-- Fetched reviews will go here -->
-                <div style="text-align: center; width: 100%; color: #64748b; font-weight: 500;">Loading reviews...</div>
-            </div>
+        <!-- Reviews List (JS Populated) -->
+        <div id="reviewsList" class="reviews-grid">
         </div>
     </div>
 </section>
@@ -404,7 +386,7 @@ async function loadReviews() {
                 if (r.role && r.role.toLowerCase() === 'teacher') badgeClass = 'bg-success';
                 
                 return `
-                <div style="min-width: 300px; max-width: 350px; scroll-snap-align: start; flex: 0 0 auto; background: white; padding: 1.5rem; border-radius: 15px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column;">
+                <div class="review-card">
                     <div style="display: flex; align-items: start; justify-content: space-between; margin-bottom: 0.5rem;">
                         <div>
                             <h5 style="margin: 0 0 4px 0; font-weight: 700; color: #1e293b;">${r.user_name}</h5>
