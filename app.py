@@ -18,9 +18,10 @@ import video_recommender
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.base_client.errors import OAuthError
 
-ADMIN_SECRET = "learnflow_admin_2026"
+ADMIN_SECRET = os.environ.get("ADMIN_SECRET", "learnflow_admin_2026")
 
-os.environ["GEMINI_API_KEY"] = "AIzaSyDf4lg06bfeIsuOYrIKbKn_6qgGtmtU7EA"
+# Do not hardcode API keys!
+# os.environ["GEMINI_API_KEY"] = "AIzaSy..."  <- Removed for security
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
@@ -31,8 +32,8 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 oauth = OAuth(app)
 google = oauth.register(
     name='google',
-    client_id='331549531881-sgpg6lr2hcdr8rut27dfmoqt8knsa1gi.apps.googleusercontent.com',
-    client_secret='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',
+    client_id=os.environ.get("GOOGLE_CLIENT_ID"),
+    client_secret=os.environ.get("GOOGLE_CLIENT_SECRET"),
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
     client_kwargs={
         'scope': 'openid email profile'
@@ -44,8 +45,8 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'studentsravan05@gmail.com'
-app.config['MAIL_PASSWORD'] = 'uxtwbajxvslrjrfz'
+app.config['MAIL_USERNAME'] = os.environ.get("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.environ.get("MAIL_PASSWORD")
 
 try:
     mail = Mail(app)
