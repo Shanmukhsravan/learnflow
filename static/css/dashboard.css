@@ -53,11 +53,17 @@ body::before {
     position: fixed;
     width: 250px;
     height: 100vh;
+    left: 0;
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
     border-right: 1px solid #e5e7eb;
     padding: 30px 22px;
     transition: 0.3s ease;
+    z-index: 1040;
+}
+
+.sidebar.collapsed {
+    left: -250px;
 }
 
 /* Logo */
@@ -97,8 +103,39 @@ body::before {
 =================================================== */
 
 .main {
-    margin-left: 260px;
+    margin-left: 250px;
     padding: 40px;
+    width: calc(100% - 250px);
+    transition: 0.3s ease;
+    min-height: 100vh;
+}
+
+.main.expanded {
+    margin-left: 0;
+    width: 100%;
+}
+
+/* PW Style Top Header Navbar */
+.top-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 15px 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    margin: -40px -40px 30px -40px;
+}
+
+.hamburger-btn {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+    margin-right: 20px;
 }
 
 /* Page Title */
@@ -527,7 +564,13 @@ body.dark-mode .modern-input {
     flex: 1;
     margin-left: 250px;
     padding: 40px;
+    width: calc(100% - 250px);
     transition: 0.3s ease;
+}
+
+.main-content.expanded {
+    margin-left: 0;
+    width: 100%;
 }
 
 /* ===================================================
@@ -622,7 +665,8 @@ body.dark-mode .metric-card {
 
     /* Remove the massive left margin from main content */
     .main, .main-content {
-        margin-left: 0;
+        margin-left: 0 !important;
+        width: 100% !important;
         padding: 20px;
     }
 

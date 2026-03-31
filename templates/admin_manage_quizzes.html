@@ -7,22 +7,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary-color: #4f46e5; --bg-light: #f8fafc; --text-dark: #1e293b; --card-bg: #ffffff; --sidebar-width: 260px; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--text-dark); overflow-x: hidden; }
-        .sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; top: 0; left: 0; background: linear-gradient(180deg, #1e1e2f 0%, #151522 100%); color: #fff; padding-top: 2rem; z-index: 1000; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
-        .sidebar-brand { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .sidebar-brand i { color: #ec4899; }
-        .nav-link { color: rgba(255,255,255,0.7); padding: 12px 24px; font-weight: 500; display: flex; align-items: center; gap: 12px; border-left: 4px solid transparent; }
-        .nav-link:hover, .nav-link.active { color: #fff; background-color: rgba(255,255,255,0.05); border-left-color: var(--primary-color); }
-        .main-content { margin-left: var(--sidebar-width); padding: 2rem; min-height: 100vh; }
-        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: var(--card-bg); padding: 1rem 2rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .table-container { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
-    </style>
+    
+    <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-brand"><i class="bi bi-rocket-takeoff-fill"></i> LearnFlow Admin</div>
+        <div class="sidebar-brand"><i class="bi bi-rocket-takeoff-fill" style="color: #ec4899;"></i> LearnFlow</div>
         <ul class="nav flex-column mt-4">
             <li class="nav-item"><a class="nav-link" href="/admin/dashboard"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="/admin/students"><i class="bi bi-people-fill"></i> Manage Students</a></li>
@@ -30,11 +20,16 @@
             <li class="nav-item"><a class="nav-link" href="/admin/courses"><i class="bi bi-journal-bookmark-fill"></i> Manage Courses</a></li>
             <li class="nav-item"><a class="nav-link active" href="/admin/quizzes"><i class="bi bi-ui-checks"></i> Manage Quizzes</a></li>
             <li class="nav-item"><a class="nav-link" href="/admin/payments"><i class="bi bi-credit-card-fill"></i> Payments</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/queries"><i class="bi bi-inbox-fill"></i> Queries Inbox</a></li>
+            
             <li class="nav-item mt-4"><a class="nav-link text-danger" href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
         </ul>
     </div>
     <div class="main-content">
         <div class="top-header">
+            <div class="d-flex align-items-center gap-3">
+                <button class="toggle-btn" id="sidebarToggle" aria-label="Toggle Sidebar"><i class="bi bi-list"></i></button>
+            </div>
             <div>
                 <h4 class="mb-0 fw-bold">Manage Quizzes</h4>
                 <p class="text-muted small mb-0">Control platform assessments and tests</p>
@@ -74,5 +69,48 @@
             </table>
         </div>
     </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // 1. Sidebar Toggle Logic
+        const toggleBtn = document.getElementById("sidebarToggle");
+        const sidebar = document.querySelector(".sidebar");
+        const mainContent = document.querySelector(".main-content");
+
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener("click", function() {
+                if (window.innerWidth <= 992) {
+                    sidebar.classList.toggle("mobile-open");
+                } else {
+                    sidebar.classList.toggle("collapsed");
+                    if(mainContent) mainContent.classList.toggle("expanded");
+                }
+            });
+        }
+
+        // 2. Real-time Table Search Filter
+        const searchInput = document.getElementById("globalSearch") || document.querySelector('input[placeholder*="Search"]');
+        const tables = document.querySelectorAll('table');
+
+        if (searchInput && tables.length > 0) {
+            searchInput.addEventListener('keyup', function() {
+                const term = this.value.toLowerCase();
+                // Find all tables and apply to their bodies
+                tables.forEach(table => {
+                    const tbody = table.querySelector('tbody') || table;
+                    const rows = tbody.querySelectorAll('tr');
+                    
+                    rows.forEach(row => {
+                        // Skip empty state rows
+                        if (row.querySelector('td[colspan]')) return;
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(term) ? "" : "none";
+                    });
+                });
+            });
+        }
+    });
+</script>
+
 </body>
 </html>

@@ -1915,5 +1915,184 @@ def teacher_performance():
     return render_template("teacher_student_performance.html", attempts=attempts)
 
 
+# =====================================================
+# PUBLIC REVIEWS API
+# =====================================================
+@app.route("/api/reviews", methods=["GET", "POST"])
+def api_reviews():
+    con = get_connection()
+    if not con:
+        return jsonify({"success": False, "error": "DB connection failed"}), 500
+    cur = con.cursor(dictionary=True)
+    
+    if request.method == "POST":
+        data = request.json
+        user_name = data.get("user_name", "Anonymous")
+        rating = data.get("rating", 5)
+        comment = data.get("comment", "")
+        user_id = session.get("user_id", 0)
+        if session.get("user_id"):
+            user_name = session.get("user_name", user_name)
+        
+        try:
+            cur.execute("""
+                INSERT INTO reviews (user_id, user_name, rating, comment)
+                VALUES (%s, %s, %s, %s)
+            """, (user_id, user_name, rating, comment))
+            con.commit()
+            return jsonify({"success": True})
+        except Exception as e:
+            return jsonify({"success": False, "error": str(e)}), 500
+        finally:
+            cur.close()
+            con.close()
+            
+    else: # GET
+        try:
+            cur.execute("""
+                SELECT r.user_name, r.rating, r.comment, DATE_FORMAT(r.created_at, '%b %d, %Y') as date, COALESCE(u.role, 'Student') as role
+                FROM reviews r
+                LEFT JOIN users u ON r.user_id = u.id
+                ORDER BY r.created_at DESC 
+            """)
+            reviews = cur.fetchall()
+            return jsonify({"success": True, "reviews": reviews})
+        except:
+            return jsonify({"success": True, "reviews": []})
+        finally:
+            cur.close()
+            con.close()
+
+@app.route("/dashboard/reviews")
+def dashboard_reviews():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    
+    con = get_connection()
+    cur = con.cursor(dictionary=True)
+    try:
+        cur.execute("""
+            SELECT r.user_name, r.rating, r.comment, DATE_FORMAT(r.created_at, '%b %d, %Y') as date, COALESCE(u.role, 'Student') as role
+            FROM reviews r
+            LEFT JOIN users u ON r.user_id = u.id
+            ORDER BY r.created_at DESC 
+        """)
+        reviews = cur.fetchall()
+    except:
+        reviews = []
+    finally:
+        cur.close()
+        con.close()
+    return render_template("dashboard_reviews.html", name=session.get("user_name"), reviews=reviews)
+
+@app.route("/support")
+def support():
+    if "user_id" not in session:
+        flash("Please log in to contact support.", "warning")
+        return redirect(url_for("login"))
+    
+    con = get_connection()
+    cur = con.cursor(dictionary=True)
+    role = "Student"
+    try:
+        cur.execute("SELECT role FROM users WHERE id = %s", (session["user_id"],))
+        user_data = cur.fetchone()
+        if user_data:
+            role = user_data.get("role", "Student")
+    except:
+        pass
+    finally:
+        cur.close()
+        con.close()
+        
+    return render_template("support.html", name=session.get("user_name"), role=role)
+
+@app.route("/api/queries", methods=["POST"])
+def submit_query():
+    if "user_id" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    data = request.json
+    subject = data.get("subject")
+    message = data.get("message")
+    
+    if not subject or not message:
+        return jsonify({"error": "Subject and message are required"}), 400
+        
+    con = get_connection()
+    cur = con.cursor()
+    try:
+        cur.execute("SELECT role FROM users WHERE id = %s", (session["user_id"],))
+        user_data = cur.fetchone()
+        role = user_data[0] if user_data else "student"
+        
+        cur.execute("""
+            INSERT INTO contact_queries (user_id, role, subject, message, status)
+            VALUES (%s, %s, %s, %s, 'Pending')
+        """, (session["user_id"], role, subject, message))
+        con.commit()
+        return jsonify({"success": True})
+    except Exception as e:
+        print(f"Error submitting query: {e}")
+        return jsonify({"error": "Internal server error"}), 500
+    finally:
+        cur.close()
+        con.close()
+
+@app.route("/admin/queries")
+def admin_queries():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+        
+    con = get_connection()
+    cur = con.cursor(dictionary=True)
+    try:
+        cur.execute("SELECT role FROM users WHERE id = %s", (session["user_id"],))
+        user_data = cur.fetchone()
+        if not user_data or user_data["role"] != "admin":
+            flash("Unauthorized Access", "danger")
+            return redirect(url_for("login"))
+            
+        cur.execute("""
+            SELECT q.*, u.full_name as user_name, u.email as user_email
+            FROM contact_queries q
+            LEFT JOIN users u ON q.user_id = u.id
+            ORDER BY q.created_at DESC
+        """)
+        queries = cur.fetchall()
+    except Exception as e:
+        print(f"Error fetching queries: {e}")
+        queries = []
+    finally:
+        cur.close()
+        con.close()
+        
+    return render_template("admin_queries.html", queries=queries)
+
+@app.route("/api/queries/<int:query_id>/resolve", methods=["POST"])
+def resolve_query(query_id):
+    if "user_id" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+        
+    con = get_connection()
+    cur = con.cursor()
+    try:
+        cur.execute("SELECT role FROM users WHERE id = %s", (session["user_id"],))
+        user_data = cur.fetchone()
+        if not user_data or user_data[0] != "admin":
+            return jsonify({"error": "Unauthorized"}), 403
+            
+        cur.execute("UPDATE contact_queries SET status = 'Resolved' WHERE id = %s", (query_id,))
+        con.commit()
+        if cur.rowcount > 0:
+            return jsonify({"success": True})
+        return jsonify({"error": "Query not found"}), 404
+    except Exception as e:
+        print(f"Error resolving query: {e}")
+        return jsonify({"error": "Internal server error"}), 500
+    finally:
+        cur.close()
+        con.close()
+
 if __name__ == "__main__":
     app.run(debug=True, port=8000)

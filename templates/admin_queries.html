@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queries Inbox - Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-brand"><i class="bi bi-rocket-takeoff-fill" style="color: #ec4899;"></i> LearnFlow</div>
+        <ul class="nav flex-column mt-4">
+            <li class="nav-item"><a class="nav-link" href="/admin/dashboard"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/students"><i class="bi bi-people-fill"></i> Manage Students</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/teachers"><i class="bi bi-person-badge-fill"></i> Manage Teachers</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/courses"><i class="bi bi-journal-bookmark-fill"></i> Manage Courses</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/quizzes"><i class="bi bi-ui-checks"></i> Manage Quizzes</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/payments"><i class="bi bi-credit-card-fill"></i> Payments</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/admin/queries"><i class="bi bi-inbox-fill"></i> Queries Inbox</a></li>
+            
+            <li class="nav-item mt-4"><a class="nav-link text-danger" href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="top-header">
+            <div class="d-flex align-items-center gap-3">
+                <button class="toggle-btn" id="sidebarToggle" aria-label="Toggle Sidebar"><i class="bi bi-list"></i></button>
+            </div>
+            <div>
+                <h4 class="mb-0 fw-bold">Queries Inbox</h4>
+                <p class="text-muted small mb-0">Help resolve student and teacher issues efficiently</p>
+            </div>
+            <div class="col-md-3">
+                <input type="text" id="globalSearch" class="form-control rounded-pill bg-light border-0 px-4" placeholder="Search queries...">
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Status</th>
+                        <th>User Name</th>
+                        <th>Role</th>
+                        <th>Subject</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if queries %}
+                        {% for q in queries %}
+                        <tr>
+                            <td>
+                                {% if q.status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark rounded-pill">Pending</span>
+                                {% else %}
+                                    <span class="badge bg-success rounded-pill">Resolved</span>
+                                {% endif %}
+                            </td>
+                            <td class="fw-bold">{{ q.user_name }}
+                                <div class="text-muted small fw-normal">{{ q.user_email }}</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ 'primary' if q.role|lower == 'student' else 'secondary' if q.role|lower == 'admin' else 'success' }} rounded-pill">{{ q.role|capitalize }}</span>
+                            </td>
+                            <td>{{ q.subject }}</td>
+                            <td class="text-muted">{{ q.created_at.strftime('%b %d, %Y') if q.created_at else '' }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="viewMessage('{{ q.message|replace('\n', ' ')|replace('\r', '')|escape }}')"><i class="bi bi-eye"></i> View</button>
+                                {% if q.status == 'Pending' %}
+                                    <button class="btn btn-sm btn-success rounded-pill px-3 ms-2" onclick="resolveQuery({{ q.id }})"><i class="bi bi-check-circle"></i> Resolve</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox fs-1 d-block mb-3 text-secondary" style="opacity: 0.5;"></i>
+                                No active queries at the moment.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- View Message Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 border-radius-16 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Query Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="queryMessageContent" class="text-muted"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const toggleBtn = document.getElementById("sidebarToggle");
+        const sidebar = document.querySelector(".sidebar");
+        const mainContent = document.querySelector(".main-content");
+
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener("click", function() {
+                if (window.innerWidth <= 992) {
+                    sidebar.classList.toggle("mobile-open");
+                } else {
+                    sidebar.classList.toggle("collapsed");
+                    if(mainContent) mainContent.classList.toggle("expanded");
+                }
+            });
+        }
+
+        // Search Filter
+        const searchInput = document.getElementById("globalSearch");
+        const tables = document.querySelectorAll('table');
+
+        if (searchInput && tables.length > 0) {
+            searchInput.addEventListener('keyup', function() {
+                const term = this.value.toLowerCase();
+                tables.forEach(table => {
+                    const tbody = table.querySelector('tbody') || table;
+                    const rows = tbody.querySelectorAll('tr');
+                    
+                    rows.forEach(row => {
+                        if (row.querySelector('td[colspan]')) return;
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(term) ? "" : "none";
+                    });
+                });
+            });
+        }
+    });
+
+    const modal = new bootstrap.Modal(document.getElementById('messageModal'));
+    
+    function viewMessage(msg) {
+        document.getElementById('queryMessageContent').innerText = msg;
+        modal.show();
+    }
+
+    async function resolveQuery(id) {
+        if (!confirm('Mark this query as resolved?')) return;
+        
+        try {
+            const res = await fetch(`/api/queries/${id}/resolve`, { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert(data.error || 'Failed to resolve query.');
+            }
+        } catch (e) {
+            alert('An error occurred.');
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -181,64 +181,71 @@
 
         <!-- SIDEBAR -->
         <div class="col-md-2 sidebar">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="logo">LearnFlow</h4>
-                <button class="btn btn-sm btn-light d-md-none" onclick="toggleSidebar()">☰</button>
-            </div>
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div class="logo mb-0"><i class="bi bi-rocket-takeoff-fill" style="color: #4f46e5;"></i> LearnFlow</div>
+        <!-- Mobile close button -->
+        <button class="btn btn-sm btn-light d-md-none" onclick="toggleSidebar()">✕</button>
+    </div>
 
             <a href="/dashboard">Dashboard</a>
             <a class="active" href="/my-courses">My Courses</a>
             <a href="/batches">Course Catalog</a>
             <a href="{{ url_for('tests') }}">Tests</a>
+                <a href="/support">📞 Contact & Support</a>
 
 
         </div>
 
         <!-- MAIN CONTENT -->
         <div class="col-md-10 main p-4">
+<!-- TOP NAVBAR (PW STYLE) -->
+<div class="top-navbar">
+    <div class="d-flex align-items-center">
+        <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
+        <div class="d-none d-md-block">
+            <h5 class="mb-0 fw-bold">Overview</h5>
+            <small class="text-muted">Explore & Learn</small>
+        </div>
+    </div>
+    
+    <!-- Profile Dropdown -->
+    <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle shadow-sm d-flex align-items-center gap-2"
+                data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 30px; padding: 6px 16px; border: 1px solid var(--border-color);">
+            {% if global_user and global_user.profile_pic %}
+                <img src="{{ url_for('static', filename='uploads/profiles/' + global_user.profile_pic) }}" alt="Profile" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-color);">
+            {% else %}
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold;">
+                    {{ session.user_name[0] if session.user_name else 'U' }}
+                </div>
+            {% endif %}
+            <span class="fw-bold text-dark">{{ session.user_name }}</span>
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 12px; min-width: 220px; margin-top: 10px;">
+            <li>
+                <div class="px-3 py-2 border-bottom mb-2">
+                    <p class="mb-0 fw-bold text-dark">{{ session.user_name }}</p>
+                    <small class="text-muted">{{ global_user.email if global_user else 'Student' }}</small>
+                </div>
+            </li>
+            <li><a class="dropdown-item fw-medium" href="/profile">👤 Profile Settings</a></li>
+            <li>
+                <div class="dropdown-item d-flex align-items-center justify-content-between" style="cursor: pointer; padding-right: 1.5rem;" onclick="document.getElementById('darkToggle').click();">
+                    <span class="fw-medium text-dark">🌙 Dark Mode</span>
+                    <div class="form-check form-switch m-0" onclick="event.stopPropagation();">
+                        <input class="form-check-input" type="checkbox" id="darkToggle" style="cursor: pointer;">
+                    </div>
+                </div>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger fw-bold" href="/logout">🚪 Logout</a></li>
+        </ul>
+    </div>
+</div>
+
             
-            <div class="hero d-flex justify-content-between align-items-center" style="position: sticky; top: 20px; z-index: 1000; box-shadow: 0 10px 30px rgba(79, 70, 229, 0.2);">
-                <!-- LEFT SIDE -->
-                <div>
-                    <h2 class="mb-1" style="font-weight: 700;">AI Learning Insights</h2>
-                    <p class="mb-0" style="opacity: 0.9;">Your personalized learning performance overview</p>
-                </div>
-
-                <!-- RIGHT SIDE (Profile Dropdown) -->
-                <div class="dropdown">
-                    <button class="btn btn-light dropdown-toggle shadow-sm d-flex align-items-center gap-2"
-                            data-bs-toggle="dropdown" style="border-radius: 30px; padding: 6px 16px; border: 1px solid var(--border-color);">
-                        {% if global_user and global_user.profile_pic %}
-                            <img src="{{ url_for('static', filename='uploads/profiles/' + global_user.profile_pic) }}" alt="Profile" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-color);">
-                        {% else %}
-                            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold;">
-                                {{ session.user_name[0] if session.user_name else 'U' }}
-                            </div>
-                        {% endif %}
-                        <span class="fw-bold text-dark">{{ session.user_name }}</span>
-                    </button>
-
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 12px; min-width: 220px; margin-top: 10px;">
-                        <li>
-                            <div class="px-3 py-2 border-bottom mb-2">
-                                <p class="mb-0 fw-bold text-dark">{{ session.user_name }}</p>
-                                <small class="text-muted">{{ global_user.email if global_user else 'Student' }}</small>
-                            </div>
-                        </li>
-                        <li><a class="dropdown-item fw-medium" href="/profile">👤 Profile Settings</a></li>
-                        <li>
-                            <div class="dropdown-item d-flex align-items-center justify-content-between" style="cursor: pointer; padding-right: 1.5rem;" onclick="document.getElementById('darkToggle').click();">
-                                <span class="fw-medium text-dark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> Dark Mode</span>
-                                <div class="form-check form-switch m-0" onclick="event.stopPropagation();">
-                                    <input class="form-check-input" type="checkbox" id="darkToggle" style="cursor: pointer;">
-                                </div>
-                            </div>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger fw-bold" href="/logout">🚪 Logout</a></li>
-                    </ul>
-                </div>
-            </div>
+            
 
             <!-- ENROLLED COURSES -->
             <div class="courses-section">

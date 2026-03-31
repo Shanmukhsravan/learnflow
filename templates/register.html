@@ -26,33 +26,35 @@
                 LearnFlow
             </div>
 
-            <div class="hero-content">
-                <h1 class="hero-title">Start your<br />journey.</h1>
-                <p class="hero-subtitle">
-                    Join our AI-powered education platform and experience learning designed exclusively for you.
-                </p>
-
-                <div class="card-stack">
-                    <div class="info-card">
-                        <div class="card-icon blue">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="18" y1="20" x2="18" y2="10"></line>
-                                <line x1="12" y1="20" x2="12" y2="4"></line>
-                                <line x1="6" y1="20" x2="6" y2="14"></line>
-                            </svg>
-                        </div>
-                        <h4>AI Recommendations</h4>
-                        <p>Dynamic course paths generated based on your continuous progress.</p>
+            <div class="hero-content mt-4" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                <div id="loginPromos" class="carousel slide" data-bs-ride="carousel" style="border-radius: 20px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.1);">
+                    <div class="carousel-indicators" style="margin-bottom: 0.5rem;">
+                        <button type="button" data-bs-target="#loginPromos" data-bs-slide-to="0" class="active" aria-current="true"></button>
+                        <button type="button" data-bs-target="#loginPromos" data-bs-slide-to="1"></button>
+                        <button type="button" data-bs-target="#loginPromos" data-bs-slide-to="2"></button>
                     </div>
-
-                    <div class="info-card">
-                        <div class="card-icon rose">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-                            </svg>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active" style="background: radial-gradient(circle at top left, #3b82f6, #4f46e5 80%); padding: 3rem; color: white; min-height: 380px; position: relative;">
+                            <div style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.3);">
+                                🌟 Premium Learning
+                            </div>
+                            <h2 style="font-size: 2.8rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.1; text-shadow: 0 4px 15px rgba(0,0,0,0.1);">Shape your<br>learning path.</h2>
+                            <p style="font-size: 1.1rem; opacity: 0.95; margin-bottom: 2rem; max-width: 90%; line-height: 1.6;">Experience AI-driven personalized education designed exclusively for how you learn best.</p>
+                            <span class="badge py-2 px-3 fw-bold" style="font-size: 0.9rem; background: white; color: #4f46e5; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">🏆 #1 AI Platform</span>
+                            <div style="position: absolute; bottom: 1.5rem; right: 1.5rem; opacity: 0.3;">
+                                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            </div>
                         </div>
-                        <h4>24/7 Chatbot</h4>
-                        <p>Instant doubt clarification wrapped in a seamless conversational AI.</p>
+                        <div class="carousel-item" style="background: linear-gradient(135deg, #10b981, #059669); padding: 3rem; color: white; min-height: 380px;">
+                            <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Special Offer: 50% Off!</h2>
+                            <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 2rem;">Enroll in any Advanced Certification Batch today and get a massive discount on your first year.</p>
+                            <span class="badge bg-light text-success py-2 px-3 fw-bold" style="font-size: 0.9rem;">Limited Time Only</span>
+                        </div>
+                        <div class="carousel-item" style="background: linear-gradient(135deg, #db2777, #9d174d); padding: 3rem; color: white; min-height: 380px;">
+                            <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">15 Million+<br>Happy Students</h2>
+                            <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 2rem;">Join India's most trusted and affordable educational platform to achieve your dreams.</p>
+                            <span class="badge bg-light text-danger py-2 px-3 fw-bold" style="font-size: 0.9rem;">Start Your Journey</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -103,13 +105,191 @@
                 </a>
             </div>
 
-            <div class="create-account">
+            <div class="create-account" style="text-align: center;">
                 Already have an account?
                 <a href="/login">Sign in</a>
+            </div>
+
+            <!-- Trust Badges -->
+            <div style="margin-top: 2.5rem; text-align: center;">
+                <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 6px; color: #64748b; font-size: 0.85rem; font-weight: 600;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        256-bit Secured
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px; color: #64748b; font-size: 0.85rem; font-weight: 600;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        Privacy First
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center; padding-top: 10px; border-top: 1px dashed #e2e8f0;">
+                    <div style="display: flex; margin-right: 12px;">
+                        <div style="width: 28px; height: 28px; border-radius: 50%; background: #3b82f6; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 2px solid white; z-index: 3;">A</div>
+                        <div style="width: 28px; height: 28px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 2px solid white; margin-left: -10px; z-index: 2;">R</div>
+                        <div style="width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border: 2px solid white; margin-left: -10px; z-index: 1;">K</div>
+                    </div>
+                    <span style="font-size: 0.85rem; font-weight: 600; color: #475569;">Join 15k+ active learners</span>
+                </div>
             </div>
 
         </div>
 
     </div>
 </div>
+
+<!-- ==============================================
+     LANDING PAGE SECTIONS (Below Fold)
+=================================================== -->
+
+<section id="about" class="landing-section fade-up-element">
+    <div class="section-header">
+        <h2 style="color: #1e293b;">Why Choose LearnFlow?</h2>
+        <p>A next-generation AI-powered educational platform created to revolutionize personalized learning and student success.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+        <div style="background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--border-color);">
+            <div style="width: 50px; height: 50px; background: #e0e7ff; color: #4f46e5; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+            </div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem; color: #1e293b;">Pedagogy First</h3>
+            <p style="color: var(--text-secondary); line-height: 1.6;">Our curriculum follows an expertly crafted pedagogy ensuring deep conceptual clarity before transitioning to complex problem solving.</p>
+        </div>
+        <div style="background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--border-color);">
+            <div style="width: 50px; height: 50px; background: #dcfce7; color: #16a34a; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem; color: #1e293b;">AI-Driven Mentoring</h3>
+            <p style="color: var(--text-secondary); line-height: 1.6;">Our engine analyzes your test scores in real-time, recommending the exact video modules and practices needed for mastery.</p>
+        </div>
+        <div style="background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--border-color);">
+            <div style="width: 50px; height: 50px; background: #fee2e2; color: #dc2626; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+            </div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem; color: #1e293b;">Affordable Excellence</h3>
+            <p style="color: var(--text-secondary); line-height: 1.6;">We believe premium education should be accessible to everyone at standard, transparent prices without hidden fees.</p>
+        </div>
+    </div>
+</section>
+
+<section id="courses" class="landing-section bg-light fade-up-element">
+    <div class="section-header">
+        <h2>Premium Courses</h2>
+        <p>Master the most demanded skills in the industry with our AI-curated curriculum.</p>
+    </div>
+
+    <div class="landing-course-grid">
+        <div class="lc-card">
+            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Web Development" class="lc-image">
+            <div class="lc-body">
+                <span class="lc-badge">Bestseller</span>
+                <div class="lc-title">Full-Stack Web Development</div>
+                <div class="lc-desc">Master modern web architecture, responsive design, and robust backend systems from scratch.</div>
+                <div class="lc-footer">
+                    <div class="lc-price">₹3,999</div>
+                    <a href="#top" class="lc-btn">Enroll Now →</a>
+                </div>
+            </div>
+        </div>
+        <div class="lc-card">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Data Science" class="lc-image">
+            <div class="lc-body">
+                <span class="lc-badge">Advanced</span>
+                <div class="lc-title">Data Science & AI Mastery</div>
+                <div class="lc-desc">Dive deep into machine learning, data engineering, and predictive algorithms using Python.</div>
+                <div class="lc-footer">
+                    <div class="lc-price">₹4,999</div>
+                    <a href="#top" class="lc-btn">Enroll Now →</a>
+                </div>
+            </div>
+        </div>
+        <div class="lc-card">
+            <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Cybersecurity" class="lc-image">
+            <div class="lc-body">
+                <span class="lc-badge">Trending</span>
+                <div class="lc-title">Ethical Hacking & Security</div>
+                <div class="lc-desc">Learn the fundamentals of cybersecurity, network defense, and vulnerability assessments.</div>
+                <div class="lc-footer">
+                    <div class="lc-price">₹4,499</div>
+                    <a href="#top" class="lc-btn">Enroll Now →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="landing-section fade-up-element" style="padding-top: 2rem;">
+    <div class="section-header" style="margin-bottom: 2rem;">
+        <h2>Contact & Support</h2>
+        <p>Meet the team behind LearnFlow or get in touch for technical assistance.</p>
+    </div>
+
+    <!-- The Guide -->
+    <div class="guide-card" style="margin-bottom: 4rem; max-width: 900px; margin-left: auto; margin-right: auto;">
+        <img src="https://ui-avatars.com/api/?name=Dr+G+Jaya+Suma&background=0D8ABC&color=fff&size=150" alt="Dr. G. Jaya Suma" class="guide-avatar">
+        <div class="guide-info">
+            <div style="text-transform: uppercase; letter-spacing: 2px; font-weight: 700; font-size: 0.9rem; color: #60a5fa; margin-bottom: 0.5rem;">Under the Guidance Of</div>
+            <h3>Dr. G. Jaya Suma</h3>
+            <div class="guide-role">M.Tech, Ph.D</div>
+            <p style="font-size: 1.1rem; opacity: 0.9; line-height: 1.6; max-width: 600px;">
+                Professor, Department Of Information Technology, JNTUGV-CEV(A).
+            </p>
+        </div>
+    </div>
+
+    <!-- The Creators (No images, 4 in a row) -->
+    <h3 style="text-align: center; font-weight: 800; margin-bottom: 0.5rem; color: #1e293b;">Developed By</h3>
+    <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+        Final year students, Department Of Information Technology, JNTUGV-CEV(A).
+    </p>
+
+    <div class="team-grid">
+        <div class="team-card">
+            <div class="team-name" style="font-size: 1.15rem;">MD. Masood</div>
+            <div class="team-role" style="font-size: 0.85rem;">Developer</div>
+            <div class="team-desc" style="font-size: 0.9rem;">IT Dept, JNTUGV-CEV(A)</div>
+        </div>
+        <div class="team-card">
+            <div class="team-name" style="font-size: 1.15rem;">B.Shanmukh Sai Sravan</div>
+            <div class="team-role" style="font-size: 0.85rem;">Developer</div>
+            <div class="team-desc" style="font-size: 0.9rem;">IT Dept, JNTUGV-CEV(A)</div>
+        </div>
+        <div class="team-card">
+            <div class="team-name" style="font-size: 1.15rem;">N.Pragath</div>
+            <div class="team-role" style="font-size: 0.85rem;">Developer</div>
+            <div class="team-desc" style="font-size: 0.9rem;">IT Dept, JNTUGV-CEV(A)</div>
+        </div>
+        <div class="team-card">
+            <div class="team-name" style="font-size: 1.15rem;">P.Rajesh</div>
+            <div class="team-role" style="font-size: 0.85rem;">Developer</div>
+            <div class="team-desc" style="font-size: 0.9rem;">IT Dept, JNTUGV-CEV(A)</div>
+        </div>
+    </div>
+
+    <!-- Support Contact -->
+    <div style="text-align: center; margin-top: 4rem; padding-top: 3rem; border-top: 1px dashed var(--border-color);">
+        <h4 style="font-weight: 700; margin-bottom: 1rem; color: #1e293b;">Need technical assistance?</h4>
+        <a href="/support" style="font-size: 1.25rem; font-weight: 600; color: var(--primary-color); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            support@learnflow.in
+        </a>
+    </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.fade-up-element').forEach(el => {
+        observer.observe(el);
+    });
+});
+</script>
+
 {% endblock %}
